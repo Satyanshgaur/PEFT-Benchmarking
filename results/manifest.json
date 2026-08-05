@@ -292,5 +292,20 @@
     "peak_vram_mb": 2090.74560546875,
     "training_time_seconds": 81.803,
     "output_dir": "results/distilbert-base-uncased/rte/full/seed42"
+  },
+  {
+    "schema_version": "1.0.0",
+    "experiment_id": "cdc443c4",
+    "status": "completed",
+    "model": "distilbert-base-uncased",
+    "dataset": "rte",
+    "method": "full",
+    "seed": 43,
+    "official_metrics": {
+      "accuracy": 0.555956678700361
+    },
+    "peak_vram_mb": 2090.74560546875,
+    "training_time_seconds": 81.8766,
+    "output_dir": "results/distilbert-base-uncased/rte/full/seed43"
   }
 ]
