@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_id": "7a57a07d",
+  "timestamp": "2026-08-05T18:05:42.932533+00:00",
+  "command": "scripts/run_single_benchmark.py --model distilbert-base-uncased --dataset rte --method full --seed 42 --results_root results",
+  "seed": 42,
+  "python_version": "3.14.4",
+  "torch_version": "2.13.0+cu130",
+  "transformers_version": "5.14.1",
+  "cuda_version": "13.0",
+  "gpu_name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "driver_version": "595.84",
+  "tokenizer": {
+    "name": "distilbert-base-uncased",
+    "revision": "main",
+    "vocab_size": 30522,
+    "max_seq_length": 128
+  },
+  "dataset": {
+    "dataset_name": "rte",
+    "dataset_config": "rte",
+    "huggingface_builder": "nyu-mll/glue",
+    "dataset_fingerprint": "7fe635b73222dc3b",
+    "num_train_samples": 2490,
+    "num_validation_samples": 277,
+    "num_labels": 2,
+    "label_names": [
+      "entailment",
+      "not_entailment"
+    ]
+  },
+  "git_commit": "b6d3841"
+}
