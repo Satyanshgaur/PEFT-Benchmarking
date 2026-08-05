@@ -149,5 +149,21 @@
     "peak_vram_mb": 1843.22607421875,
     "training_time_seconds": 85.9799,
     "output_dir": "results/distilbert-base-uncased/mrpc/full/seed42"
+  },
+  {
+    "schema_version": "1.0.0",
+    "experiment_id": "3674d39b",
+    "status": "completed",
+    "model": "distilbert-base-uncased",
+    "dataset": "mrpc",
+    "method": "full",
+    "seed": 43,
+    "official_metrics": {
+      "accuracy": 0.8504901960784313,
+      "f1": 0.8960817717206133
+    },
+    "peak_vram_mb": 1843.22607421875,
+    "training_time_seconds": 86.721,
+    "output_dir": "results/distilbert-base-uncased/mrpc/full/seed43"
   }
 ]
