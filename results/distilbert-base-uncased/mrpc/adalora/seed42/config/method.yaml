@@ -6,3 +6,4 @@ target_modules:
 - value
 target_r: 8
 task_type: SEQ_CLS
+total_step: 10000
