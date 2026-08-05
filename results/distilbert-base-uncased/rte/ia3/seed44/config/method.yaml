@@ -1,0 +1,7 @@
+feedforward_modules:
+- value
+target_modules:
+- query
+- value
+- key
+task_type: SEQ_CLS
