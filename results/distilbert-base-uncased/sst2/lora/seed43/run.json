@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_id": "86dcf112",
+  "timestamp": "2026-08-05T10:41:31.267700+00:00",
+  "command": "scripts/run_single_benchmark.py --model distilbert-base-uncased --dataset sst2 --method lora --seed 43 --results_root results",
+  "seed": 43,
+  "python_version": "3.14.4",
+  "torch_version": "2.13.0+cu130",
+  "transformers_version": "5.14.1",
+  "cuda_version": "13.0",
+  "gpu_name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "driver_version": "595.84",
+  "tokenizer": {
+    "name": "distilbert-base-uncased",
+    "revision": "main",
+    "vocab_size": 30522,
+    "max_seq_length": 128
+  },
+  "dataset": {
+    "dataset_name": "sst2",
+    "dataset_config": "sst2",
+    "huggingface_builder": "nyu-mll/glue",
+    "dataset_fingerprint": "ef88329bb09b2c7a",
+    "num_train_samples": 67349,
+    "num_validation_samples": 872,
+    "num_labels": 2,
+    "label_names": [
+      "negative",
+      "positive"
+    ]
+  },
+  "git_commit": "6fef260"
+}

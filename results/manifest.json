@@ -58,5 +58,20 @@
     "peak_vram_mb": 1459.80126953125,
     "training_time_seconds": 789.6295,
     "output_dir": "results/distilbert-base-uncased/sst2/full/seed44"
+  },
+  {
+    "schema_version": "1.0.0",
+    "experiment_id": "86dcf112",
+    "status": "completed",
+    "model": "distilbert-base-uncased",
+    "dataset": "sst2",
+    "method": "lora",
+    "seed": 43,
+    "official_metrics": {
+      "accuracy": 0.8681192660550459
+    },
+    "peak_vram_mb": 811.70849609375,
+    "training_time_seconds": 505.4684,
+    "output_dir": "results/distilbert-base-uncased/sst2/lora/seed43"
   }
 ]
