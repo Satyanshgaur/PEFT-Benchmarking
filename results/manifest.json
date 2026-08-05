@@ -229,5 +229,21 @@
     "peak_vram_mb": 1115.89404296875,
     "training_time_seconds": 64.7577,
     "output_dir": "results/distilbert-base-uncased/mrpc/lora/seed44"
+  },
+  {
+    "schema_version": "1.0.0",
+    "experiment_id": "d233184a",
+    "status": "completed",
+    "model": "distilbert-base-uncased",
+    "dataset": "mrpc",
+    "method": "ia3",
+    "seed": 42,
+    "official_metrics": {
+      "accuracy": 0.6838235294117647,
+      "f1": 0.8122270742358079
+    },
+    "peak_vram_mb": 1374.0654296875,
+    "training_time_seconds": 64.2274,
+    "output_dir": "results/distilbert-base-uncased/mrpc/ia3/seed42"
   }
 ]
