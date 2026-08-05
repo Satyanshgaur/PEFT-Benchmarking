@@ -1,0 +1,33 @@
+# PEFT Method Structural Configurations
+# Note: Learning rates and training schedules are controlled centrally in global.yaml
+
+schema_version: "1.0.0"
+
+full:
+  description: "Full Fine-Tuning Baseline"
+
+lora:
+  r: 8
+  lora_alpha: 16
+  lora_dropout: 0.1
+  target_modules: ["query", "value"]
+  bias: "none"
+  task_type: "SEQ_CLS"
+
+adalora:
+  init_r: 12
+  target_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.1
+  target_modules: ["query", "value"]
+  task_type: "SEQ_CLS"
+
+prefix:
+  num_virtual_tokens: 20
+  prefix_projection: true
+  task_type: "SEQ_CLS"
+
+ia3:
+  target_modules: ["query", "value", "key"]
+  feedforward_modules: ["value"]
+  task_type: "SEQ_CLS"

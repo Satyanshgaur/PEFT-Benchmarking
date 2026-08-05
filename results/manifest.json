@@ -1,0 +1,17 @@
+[
+  {
+    "schema_version": "1.0.0",
+    "experiment_id": "fb8ddc3b",
+    "status": "completed",
+    "model": "distilbert-base-uncased",
+    "dataset": "sst2",
+    "method": "lora",
+    "seed": 42,
+    "official_metrics": {
+      "accuracy": 0.53125
+    },
+    "peak_vram_mb": 703.92822265625,
+    "training_time_seconds": 1.3083,
+    "output_dir": "results/distilbert-base-uncased/sst2/lora/seed42"
+  }
+]

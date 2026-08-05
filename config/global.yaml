@@ -1,0 +1,28 @@
+# Global Benchmark Training Hyperparameters
+# Applied uniformly across all adaptation methods for controlled comparison
+
+schema_version: "1.0.0"
+
+training:
+  optimizer: "adamw_torch"
+  scheduler: "linear"
+  epochs: 3
+  batch_size: 32
+  learning_rate: 2.0e-5
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+  max_seq_length: 128
+  fp16: false
+
+seeds:
+  - 42
+  - 43
+  - 44
+
+hardware_tracking:
+  polling_interval_ms: 500
+  backend: "nvml_psutil"
+
+deterministic:
+  seed_all: true
+  use_deterministic_algorithms: false  # Can be enabled, but may impact CUDA kernel performance
