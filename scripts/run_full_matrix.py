@@ -234,7 +234,7 @@ def main():
                         "--seed", str(seed),
                         "--results_root", args.results_root
                     ]
-                    if args.dry-run:
+                    if args.dry_run:
                         cmd.append("--dry-run")
 
                     res = subprocess.run(cmd)
