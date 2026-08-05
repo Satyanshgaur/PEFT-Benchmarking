@@ -1,0 +1,8 @@
+init_r: 12
+lora_alpha: 16
+lora_dropout: 0.1
+target_modules:
+- query
+- value
+target_r: 8
+task_type: SEQ_CLS
