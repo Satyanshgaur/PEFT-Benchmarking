@@ -442,5 +442,20 @@
     "peak_vram_mb": 814.16943359375,
     "training_time_seconds": 655.7422,
     "output_dir": "results/distilbert-base-uncased/sst2/adalora/seed43"
+  },
+  {
+    "schema_version": "1.0.0",
+    "experiment_id": "987639f0",
+    "status": "completed",
+    "model": "distilbert-base-uncased",
+    "dataset": "sst2",
+    "method": "adalora",
+    "seed": 44,
+    "official_metrics": {
+      "accuracy": 0.8371559633027523
+    },
+    "peak_vram_mb": 814.16943359375,
+    "training_time_seconds": 742.9451,
+    "output_dir": "results/distilbert-base-uncased/sst2/adalora/seed44"
   }
 ]
