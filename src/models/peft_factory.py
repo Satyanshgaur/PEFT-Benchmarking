@@ -83,6 +83,7 @@ def create_benchmark_model(
             lora_alpha=method_config.get("lora_alpha", 16),
             lora_dropout=method_config.get("lora_dropout", 0.1),
             target_modules=target_mods,
+            total_step=method_config.get("total_step", 10000),
             task_type=TaskType.SEQ_CLS
         )
         model = get_peft_model(base_model, peft_config)

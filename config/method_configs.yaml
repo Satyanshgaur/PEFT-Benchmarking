@@ -20,6 +20,7 @@ adalora:
   lora_alpha: 16
   lora_dropout: 0.1
   target_modules: ["query", "value"]
+  total_step: 10000
   task_type: "SEQ_CLS"
 
 prefix:
