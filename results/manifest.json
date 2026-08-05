@@ -352,5 +352,20 @@
     "peak_vram_mb": 1305.02099609375,
     "training_time_seconds": 61.4389,
     "output_dir": "results/distilbert-base-uncased/rte/lora/seed43"
+  },
+  {
+    "schema_version": "1.0.0",
+    "experiment_id": "0d805356",
+    "status": "completed",
+    "model": "distilbert-base-uncased",
+    "dataset": "rte",
+    "method": "lora",
+    "seed": 44,
+    "official_metrics": {
+      "accuracy": 0.5523465703971119
+    },
+    "peak_vram_mb": 1305.02099609375,
+    "training_time_seconds": 61.1584,
+    "output_dir": "results/distilbert-base-uncased/rte/lora/seed44"
   }
 ]
