@@ -80,6 +80,13 @@ def run_benchmark_experiment(
     Returns:
         Tuple of (metrics_dict, predictions_df, misclassified_df, train_log_df).
     """
+    # Limit PyTorch CPU thread count to prevent laptop CPU thermal spikes
+    torch.set_num_threads(2)
+    try:
+        torch.set_num_interop_threads(2)
+    except Exception:
+        pass
+
     train_cfg = global_config["training"]
     epochs = train_cfg["epochs"]
     batch_size = train_cfg["batch_size"]
