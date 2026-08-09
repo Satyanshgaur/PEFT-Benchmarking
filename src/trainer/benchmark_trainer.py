@@ -41,21 +41,6 @@ class MetricsLoggerCallback(TrainerCallback):
         }
         self.logs.append(entry)
 
-    def on_step_end(self, args, state, control, **kwargs):
-        """Pause briefly if CPU temperature exceeds 82°C to allow fans to flush heat."""
-        import glob
-        try:
-            temps = []
-            for path in glob.glob("/sys/class/hwmon/hwmon*/temp*_input"):
-                with open(path, "r") as f:
-                    v = float(f.read().strip()) / 1000.0
-                    if 0 < v < 150:
-                        temps.append(v)
-            if temps and max(temps) >= 82.0:
-                time.sleep(5)
-        except Exception:
-            pass
-
 
 def get_directory_size_mb(directory_path: str) -> float:
     """Compute total disk size of a directory in Megabytes."""
