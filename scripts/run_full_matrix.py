@@ -220,6 +220,10 @@ def main():
             for method in methods:
                 for seed in seeds:
                     completed_count += 1
+                    if model == "distilbert-base-uncased" and method == "prefix":
+                        print(f"⏩ [{completed_count}/{total_experiments}] Skipping unsupported combination: distilbert-base-uncased does not support Prefix Tuning (no KV cache support in DistilBERT)")
+                        continue
+
                     if not args.force and is_run_completed(args.results_root, model, dataset, method, seed):
                         print(f"⏩ [{completed_count}/{total_experiments}] Skipping existing run: {model} | {dataset} | {method} | seed {seed}")
                         continue
