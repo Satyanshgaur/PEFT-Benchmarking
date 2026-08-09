@@ -7,7 +7,7 @@ training:
   optimizer: "adamw_torch"
   scheduler: "linear"
   epochs: 3
-  batch_size: 16
+  batch_size: 32
   learning_rate: 2.0e-5
   warmup_ratio: 0.1
   weight_decay: 0.01
