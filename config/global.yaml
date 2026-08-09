@@ -12,7 +12,7 @@ training:
   warmup_ratio: 0.1
   weight_decay: 0.01
   max_seq_length: 128
-  fp16: true
+  fp16: false
 
 seeds:
   - 42
