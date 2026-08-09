@@ -241,7 +241,6 @@ def main():
                     if res.returncode != 0:
                         print(f"❌ Error executing run {model}/{dataset}/{method}/seed{seed}")
 
-    # Aggregate post-run results
     print("\n📊 Computing per-backbone Pareto frontiers...")
     compute_per_backbone_pareto_frontiers(args.results_root)
 
@@ -249,6 +248,17 @@ def main():
     compute_statistical_tests(args.results_root)
 
     print("\n🎉 Full matrix benchmark execution complete! Multi-run summary saved to results/pareto.json and results/statistical_tests.json")
+
+    # Push final aggregated summaries to GitHub
+    try:
+        subprocess.run(["git", "add", "."], check=True)
+        status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+        if status.stdout.strip():
+            subprocess.run(["git", "commit", "-m", "benchmark: updated pareto frontiers and statistical summaries"], check=True)
+            subprocess.run(["git", "push"], check=True)
+            print("⬆️ Successfully pushed matrix summaries to GitHub!")
+    except Exception as e:
+        print(f"⚠️ Git push notice: {e}")
 
 
 if __name__ == "__main__":

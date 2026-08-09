@@ -92,12 +92,14 @@ def create_benchmark_model(
     elif method_name == "prefix":
         hidden_size = getattr(base_model.config, "hidden_size", getattr(base_model.config, "dim", 768))
         num_layers = getattr(base_model.config, "num_hidden_layers", getattr(base_model.config, "n_layers", 12))
+        num_heads = getattr(base_model.config, "num_attention_heads", getattr(base_model.config, "n_heads", 12))
         peft_config = PrefixTuningConfig(
             num_virtual_tokens=method_config.get("num_virtual_tokens", 20),
             prefix_projection=method_config.get("prefix_projection", True),
             encoder_hidden_size=hidden_size,
             token_dim=hidden_size,
             num_layers=num_layers,
+            num_attention_heads=num_heads,
             task_type=TaskType.SEQ_CLS
         )
         model = get_peft_model(base_model, peft_config)
