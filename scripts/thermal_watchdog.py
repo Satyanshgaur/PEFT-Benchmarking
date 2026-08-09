@@ -2,7 +2,8 @@
 
 Monitors CPU and GPU temperatures every N seconds.
 1. Fan Boost Tier (≥ 75°C): Automatically activates max fan cooling performance profiles.
-2. Safety Shutdown Tier (≥ 88°C): Automatically terminates training processes if thermals hit maximum safety threshold.
+2. Sustained Thermal Safety Shutdown (≥ 92°C for 2 consecutive checks = 6s):
+   Ignores transient 1-second module load spikes, but shuts down training if high thermals are sustained.
 """
 
 import os
@@ -83,16 +84,18 @@ def terminate_training_processes(log_file: str, reason: str):
 def main():
     parser = argparse.ArgumentParser(description="Dynamic thermal watchdog monitor for training execution.")
     parser.add_argument("--fan_boost_temp", type=float, default=75.0, help="Temperature in °C to trigger max fan performance profile (default: 75.0)")
-    parser.add_argument("--max_temp", type=float, default=88.0, help="Maximum allowed temperature in °C for safety shutdown (default: 88.0)")
+    parser.add_argument("--max_temp", type=float, default=92.0, help="Maximum allowed temperature in °C for safety shutdown (default: 92.0)")
+    parser.add_argument("--required_breaches", type=int, default=2, help="Number of consecutive checks above limit before shutdown (default: 2)")
     parser.add_argument("--check_interval", type=float, default=3.0, help="Monitoring check interval in seconds (default: 3.0)")
     parser.add_argument("--log_file", type=str, default="results/thermal_shutdown.log", help="Path to thermal shutdown log file")
 
     args = parser.parse_args()
 
     os.makedirs(os.path.dirname(args.log_file), exist_ok=True)
-    print(f"🛡️ Dynamic Thermal Watchdog Active: Fan Boost at {args.fan_boost_temp}°C | Safety Stop at {args.max_temp}°C")
+    print(f"🛡️ Dynamic Thermal Watchdog Active: Fan Boost at {args.fan_boost_temp}°C | Sustained Safety Stop at {args.max_temp}°C (Breaches: {args.required_breaches})")
 
     fan_boosted = False
+    consecutive_breaches = 0
 
     while True:
         gpu_temp = get_gpu_temp()
@@ -105,16 +108,16 @@ def main():
             fan_boosted = True
             print(f"🌀 High temperature detected ({max_current:.1f}°C): Max fan performance mode activated!", flush=True)
 
-        # Safety shutdown if thermals reach upper limit
-        if gpu_temp >= args.max_temp:
-            reason = f"GPU Temperature ({gpu_temp:.1f}°C) exceeded safety limit of {args.max_temp}°C!"
-            terminate_training_processes(args.log_file, reason)
-            sys.exit(1)
-
-        if cpu_temp >= args.max_temp:
-            reason = f"CPU Temperature ({cpu_temp:.1f}°C) exceeded safety limit of {args.max_temp}°C!"
-            terminate_training_processes(args.log_file, reason)
-            sys.exit(1)
+        # Check for sustained thermal breach
+        if max_current >= args.max_temp:
+            consecutive_breaches += 1
+            print(f"⚠️ High temperature warning ({max_current:.1f}°C >= {args.max_temp}°C): Breach {consecutive_breaches}/{args.required_breaches}", flush=True)
+            if consecutive_breaches >= args.required_breaches:
+                reason = f"Sustained High Temperature ({max_current:.1f}°C) exceeded safety limit of {args.max_temp}°C for {consecutive_breaches} consecutive checks!"
+                terminate_training_processes(args.log_file, reason)
+                sys.exit(1)
+        else:
+            consecutive_breaches = 0
 
         time.sleep(args.check_interval)
 

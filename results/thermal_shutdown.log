@@ -1,0 +1,11 @@
+🔥 [2026-08-09T17:35:20.158665] THERMAL SHUTDOWN TRIGGERED: CPU Temperature (80.0°C) exceeded maximum limit of 80.0°C!
+🔥 [2026-08-09T17:42:15.121378] THERMAL SHUTDOWN TRIGGERED: CPU Temperature (87.0°C) exceeded maximum limit of 85.0°C!
+🔥 [2026-08-09T17:45:51.417091] THERMAL SHUTDOWN TRIGGERED: CPU Temperature (91.0°C) exceeded safety limit of 88.0°C!
+🔥 [2026-08-09T17:47:20.860056] THERMAL SHUTDOWN TRIGGERED: CPU Temperature (93.0°C) exceeded safety limit of 90.0°C!
+🔥 [2026-08-09T17:47:51.524111] THERMAL SHUTDOWN TRIGGERED: CPU Temperature (89.0°C) exceeded safety limit of 88.0°C!
+🔥 [2026-08-09T17:48:43.426220] THERMAL SHUTDOWN TRIGGERED: CPU Temperature (94.0°C) exceeded safety limit of 92.0°C!
+🔥 [2026-08-09T17:49:35.238948] THERMAL SHUTDOWN TRIGGERED: CPU Temperature (89.0°C) exceeded safety limit of 88.0°C!
+🔥 [2026-08-09T17:49:49.292754] THERMAL SHUTDOWN TRIGGERED: CPU Temperature (93.0°C) exceeded safety limit of 93.0°C!
+🔥 [2026-08-09T17:50:18.552402] THERMAL SHUTDOWN TRIGGERED: Sustained High Temperature (93.0°C) exceeded safety limit of 92.0°C for 2 consecutive checks!
+🔥 [2026-08-09T17:57:59.697050] THERMAL SHUTDOWN TRIGGERED: Sustained High Temperature (96.0°C) exceeded safety limit of 96.0°C for 2 consecutive checks!
+🔥 [2026-08-09T19:34:43.854731] THERMAL SHUTDOWN TRIGGERED: Sustained High Temperature (96.0°C) exceeded safety limit of 96.0°C for 2 consecutive checks!
