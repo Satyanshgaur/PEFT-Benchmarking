@@ -730,5 +730,21 @@
     "peak_vram_mb": 1143.185546875,
     "training_time_seconds": 1022.546,
     "output_dir": "results/bert-base-uncased/sst2/ia3/seed44"
+  },
+  {
+    "schema_version": "1.0.0",
+    "experiment_id": "79af82fe",
+    "status": "completed",
+    "model": "bert-base-uncased",
+    "dataset": "mrpc",
+    "method": "full",
+    "seed": 42,
+    "official_metrics": {
+      "accuracy": 0.8651960784313726,
+      "f1": 0.905982905982906
+    },
+    "peak_vram_mb": 2321.0478515625,
+    "training_time_seconds": 170.0912,
+    "output_dir": "results/bert-base-uncased/mrpc/full/seed42"
   }
 ]
