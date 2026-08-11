@@ -1,0 +1,24 @@
+{
+  "task_type": "SEQ_CLS",
+  "peft_type": "IA3",
+  "auto_mapping": null,
+  "peft_version": "0.20.0",
+  "base_model_name_or_path": "bert-base-uncased",
+  "revision": null,
+  "inference_mode": 0,
+  "target_modules": [
+    "dense",
+    "value",
+    "key"
+  ],
+  "exclude_modules": null,
+  "feedforward_modules": [
+    "dense"
+  ],
+  "fan_in_fan_out": 0,
+  "modules_to_save": [
+    "classifier",
+    "score"
+  ],
+  "init_ia3_weights": 1
+}
