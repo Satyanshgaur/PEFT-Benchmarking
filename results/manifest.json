@@ -655,5 +655,20 @@
     "peak_vram_mb": 955.99072265625,
     "training_time_seconds": 1123.898,
     "output_dir": "results/bert-base-uncased/sst2/adalora/seed42"
+  },
+  {
+    "schema_version": "1.0.0",
+    "experiment_id": "a2e5034b",
+    "status": "completed",
+    "model": "bert-base-uncased",
+    "dataset": "sst2",
+    "method": "adalora",
+    "seed": 43,
+    "official_metrics": {
+      "accuracy": 0.6823394495412844
+    },
+    "peak_vram_mb": 955.99072265625,
+    "training_time_seconds": 1031.7728,
+    "output_dir": "results/bert-base-uncased/sst2/adalora/seed43"
   }
 ]
