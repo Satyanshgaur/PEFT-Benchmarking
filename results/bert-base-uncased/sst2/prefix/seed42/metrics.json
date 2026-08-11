@@ -1,0 +1,47 @@
+{
+  "official_metrics": {
+    "accuracy": 0.9036697247706422
+  },
+  "diagnostic_metrics": {
+    "precision": 0.9037914691943127,
+    "recall": 0.9035109876231371,
+    "macro_f1": 0.9036083695223056,
+    "expected_calibration_error": 0.04880928863352593,
+    "brier_score": 0.0721094086766243,
+    "confusion_matrix": [
+      [
+        383,
+        45
+      ],
+      [
+        39,
+        405
+      ]
+    ]
+  },
+  "schema_version": "1.0.0",
+  "efficiency_metrics": {
+    "training_time_seconds": 1079.5237,
+    "train_samples_per_second": 187.163,
+    "train_steps_per_second": 11.7,
+    "inference_latency_ms_per_sample": 2.929145580274971,
+    "inference_throughput_samples_per_second": 341.3964832386808,
+    "peak_vram_mb": 1055.1171875,
+    "avg_vram_mb": 666.7063292749623,
+    "cpu_ram_mb": 1678.2958699148123,
+    "gpu_utilization_pct": 95.37459434399629,
+    "cpu_utilization_pct": 15.293973110802039,
+    "polling_interval_ms": 500,
+    "measurement_backend": "nvml_psutil",
+    "approximate_analytical_flops_estimate": 1.36195919346048e+16,
+    "flops_per_sample": 67408038400.0,
+    "estimation_methodology": "Analytical estimate based on 2 FLOPs/param/token for forward pass and gradient backpropagation FLOPs weighted by trainable vs frozen weights."
+  },
+  "parameter_metrics": {
+    "trainable_parameters": 14781698,
+    "total_parameters": 124265476,
+    "pct_trainable": 11.895257215286408,
+    "checkpoint_size_mb": 347.2514171600342
+  },
+  "experiment_id": "cd255fd7"
+}
