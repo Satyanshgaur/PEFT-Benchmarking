@@ -1,0 +1,48 @@
+{
+  "official_metrics": {
+    "accuracy": 0.7426470588235294,
+    "f1": 0.8341232227488151
+  },
+  "diagnostic_metrics": {
+    "precision": 0.7339924670433144,
+    "recall": 0.624281070267567,
+    "macro_f1": 0.6301763654727682,
+    "expected_calibration_error": 0.033267432714209844,
+    "brier_score": 0.18245117366313934,
+    "confusion_matrix": [
+      [
+        39,
+        90
+      ],
+      [
+        15,
+        264
+      ]
+    ]
+  },
+  "schema_version": "1.0.0",
+  "efficiency_metrics": {
+    "training_time_seconds": 122.9997,
+    "train_samples_per_second": 89.464,
+    "train_steps_per_second": 5.61,
+    "inference_latency_ms_per_sample": 5.288415855384122,
+    "inference_throughput_samples_per_second": 189.09254252044164,
+    "peak_vram_mb": 1314.0947265625,
+    "avg_vram_mb": 670.9023377953506,
+    "cpu_ram_mb": 1595.3488630589432,
+    "gpu_utilization_pct": 95.3089430894309,
+    "cpu_utilization_pct": 18.106097560975613,
+    "polling_interval_ms": 500,
+    "measurement_backend": "nvml_psutil",
+    "approximate_analytical_flops_estimate": 741758054553600.0,
+    "flops_per_sample": 67408038400.0,
+    "estimation_methodology": "Analytical estimate based on 2 FLOPs/param/token for forward pass and gradient backpropagation FLOPs weighted by trainable vs frozen weights."
+  },
+  "parameter_metrics": {
+    "trainable_parameters": 14781698,
+    "total_parameters": 124265476,
+    "pct_trainable": 11.895257215286408,
+    "checkpoint_size_mb": 346.82644844055176
+  },
+  "experiment_id": "6c13e73c"
+}
