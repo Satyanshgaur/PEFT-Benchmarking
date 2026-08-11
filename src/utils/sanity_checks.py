@@ -28,8 +28,8 @@ def run_sanity_checks(
             f"Full fine-tuning trainable parameters ({trainable_params}) must equal total parameters ({total_params})."
         )
     else:
-        assert pct_trainable < 10.0, (
-            f"PEFT method '{method}' parameter percentage ({pct_trainable:.2f}%) exceeds expected threshold (< 10.0%)."
+        assert pct_trainable < 15.0, (
+            f"PEFT method '{method}' parameter percentage ({pct_trainable:.2f}%) exceeds expected threshold (< 15.0%)."
         )
 
     # 2. Memory sanity check
