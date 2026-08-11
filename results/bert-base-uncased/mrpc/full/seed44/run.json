@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_id": "d5d01cfb",
+  "timestamp": "2026-08-11T18:53:31.597383+00:00",
+  "command": "scripts/run_single_benchmark.py --model bert-base-uncased --dataset mrpc --method full --seed 44 --results_root results",
+  "seed": 44,
+  "python_version": "3.14.6",
+  "torch_version": "2.13.0+cu130",
+  "transformers_version": "5.14.1",
+  "cuda_version": "13.0",
+  "gpu_name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "driver_version": "610.57.04",
+  "tokenizer": {
+    "name": "bert-base-uncased",
+    "revision": "main",
+    "vocab_size": 30522,
+    "max_seq_length": 128
+  },
+  "dataset": {
+    "dataset_name": "mrpc",
+    "dataset_config": "mrpc",
+    "huggingface_builder": "nyu-mll/glue",
+    "dataset_fingerprint": "9df39d35bc67ce24",
+    "num_train_samples": 3668,
+    "num_validation_samples": 408,
+    "num_labels": 2,
+    "label_names": [
+      "not_equivalent",
+      "equivalent"
+    ]
+  },
+  "git_commit": "53af784"
+}
