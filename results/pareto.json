@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Per-backbone Pareto frontier analysis comparing Accuracy vs Peak VRAM and Training Time",
+  "backbones": {
+    "distilbert-base-uncased__sst2": [
+      {
+        "method": "lora",
+        "mean_accuracy": 0.7562117737003057,
+        "mean_peak_vram_mb": 775.78173828125,
+        "mean_training_time_seconds": 362.72329999999994,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "full",
+        "mean_accuracy": 0.8998470948012232,
+        "mean_peak_vram_mb": 1459.80126953125,
+        "mean_training_time_seconds": 782.4928333333334,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "ia3",
+        "mean_accuracy": 0.8356269113149848,
+        "mean_peak_vram_mb": 979.3916015625,
+        "mean_training_time_seconds": 587.4191,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "adalora",
+        "mean_accuracy": 0.8352446483180428,
+        "mean_peak_vram_mb": 814.16943359375,
+        "mean_training_time_seconds": 647.9194666666667,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      }
+    ],
+    "distilbert-base-uncased__mrpc": [
+      {
+        "method": "full",
+        "mean_accuracy": 0.8488562091503268,
+        "mean_peak_vram_mb": 1843.22607421875,
+        "mean_training_time_seconds": 86.23899999999999,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "lora",
+        "mean_accuracy": 0.6838235294117648,
+        "mean_peak_vram_mb": 1115.89404296875,
+        "mean_training_time_seconds": 64.7772,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "ia3",
+        "mean_accuracy": 0.6838235294117648,
+        "mean_peak_vram_mb": 1374.0654296875,
+        "mean_training_time_seconds": 64.5477,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "adalora",
+        "mean_accuracy": 0.6838235294117648,
+        "mean_peak_vram_mb": 1118.57177734375,
+        "mean_training_time_seconds": 66.8285,
+        "pareto_dominated": true,
+        "pareto_optimal": false
+      }
+    ],
+    "distilbert-base-uncased__rte": [
+      {
+        "method": "full",
+        "mean_accuracy": 0.5860409145607702,
+        "mean_peak_vram_mb": 2090.74560546875,
+        "mean_training_time_seconds": 81.80843333333333,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "lora",
+        "mean_accuracy": 0.5342960288808664,
+        "mean_peak_vram_mb": 1305.02099609375,
+        "mean_training_time_seconds": 61.21523333333334,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "ia3",
+        "mean_accuracy": 0.5222623345367028,
+        "mean_peak_vram_mb": 1625.2587890625,
+        "mean_training_time_seconds": 61.23779999999999,
+        "pareto_dominated": true,
+        "pareto_optimal": false
+      },
+      {
+        "method": "adalora",
+        "mean_accuracy": 0.5318892900120337,
+        "mean_peak_vram_mb": 1307.84521484375,
+        "mean_training_time_seconds": 62.86983333333333,
+        "pareto_dominated": true,
+        "pareto_optimal": false
+      }
+    ],
+    "bert-base-uncased__sst2": [
+      {
+        "method": "full",
+        "mean_accuracy": 0.9243119266055047,
+        "mean_peak_vram_mb": 2580.59521484375,
+        "mean_training_time_seconds": 1567.7639,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "lora",
+        "mean_accuracy": 0.8956422018348623,
+        "mean_peak_vram_mb": 1129.6092122395833,
+        "mean_training_time_seconds": 1166.9161666666666,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "adalora",
+        "mean_accuracy": 0.6636085626911316,
+        "mean_peak_vram_mb": 955.99072265625,
+        "mean_training_time_seconds": 1061.2950666666666,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "ia3",
+        "mean_accuracy": 0.8038990825688074,
+        "mean_peak_vram_mb": 1143.185546875,
+        "mean_training_time_seconds": 1022.6637000000001,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      }
+    ],
+    "bert-base-uncased__mrpc": [
+      {
+        "method": "full",
+        "mean_accuracy": 0.8676470588235294,
+        "mean_peak_vram_mb": 2321.0478515625,
+        "mean_training_time_seconds": 225.89973333333333,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "lora",
+        "mean_accuracy": 0.6838235294117648,
+        "mean_peak_vram_mb": 1270.70263671875,
+        "mean_training_time_seconds": 140.62550000000002,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "adalora",
+        "mean_accuracy": 0.6838235294117648,
+        "mean_peak_vram_mb": 1273.84326171875,
+        "mean_training_time_seconds": 126.2919,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "ia3",
+        "mean_accuracy": 0.6838235294117648,
+        "mean_peak_vram_mb": 1564.42724609375,
+        "mean_training_time_seconds": 121.34140000000001,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      }
+    ],
+    "bert-base-uncased__rte": [
+      {
+        "method": "full",
+        "mean_accuracy": 0.6570397111913358,
+        "mean_peak_vram_mb": 2545.953125,
+        "mean_training_time_seconds": 171.62633333333335,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "lora",
+        "mean_accuracy": 0.4753309265944645,
+        "mean_peak_vram_mb": 1454.17236328125,
+        "mean_training_time_seconds": 125.09473333333334,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "adalora",
+        "mean_accuracy": 0.4584837545126354,
+        "mean_peak_vram_mb": 1457.45361328125,
+        "mean_training_time_seconds": 131.3485,
+        "pareto_dominated": true,
+        "pareto_optimal": false
+      },
+      {
+        "method": "prefix",
+        "mean_accuracy": 0.51985559566787,
+        "mean_peak_vram_mb": 1468.16162109375,
+        "mean_training_time_seconds": 127.40480000000001,
+        "pareto_dominated": false,
+        "pareto_optimal": true
+      },
+      {
+        "method": "ia3",
+        "mean_accuracy": 0.4705174488567991,
+        "mean_peak_vram_mb": 1805.12646484375,
+        "mean_training_time_seconds": 129.2994666666667,
+        "pareto_dominated": true,
+        "pareto_optimal": false
+      }
+    ]
+  }
+}
