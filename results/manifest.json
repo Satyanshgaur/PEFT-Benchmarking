@@ -1012,5 +1012,20 @@
     "peak_vram_mb": 1454.17236328125,
     "training_time_seconds": 125.1597,
     "output_dir": "results/bert-base-uncased/rte/lora/seed44"
+  },
+  {
+    "schema_version": "1.0.0",
+    "experiment_id": "b2a574ee",
+    "status": "completed",
+    "model": "bert-base-uncased",
+    "dataset": "rte",
+    "method": "adalora",
+    "seed": 42,
+    "official_metrics": {
+      "accuracy": 0.44765342960288806
+    },
+    "peak_vram_mb": 1457.45361328125,
+    "training_time_seconds": 131.2206,
+    "output_dir": "results/bert-base-uncased/rte/adalora/seed42"
   }
 ]
