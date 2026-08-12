@@ -1,0 +1,47 @@
+{
+  "official_metrics": {
+    "accuracy": 0.5090252707581228
+  },
+  "diagnostic_metrics": {
+    "precision": 0.5204171562867215,
+    "recall": 0.5181689846282548,
+    "macro_f1": 0.49909584086799275,
+    "expected_calibration_error": 0.001696669883245994,
+    "brier_score": 0.24878183007240295,
+    "confusion_matrix": [
+      [
+        51,
+        95
+      ],
+      [
+        41,
+        90
+      ]
+    ]
+  },
+  "schema_version": "1.0.0",
+  "efficiency_metrics": {
+    "training_time_seconds": 125.05,
+    "train_samples_per_second": 59.736,
+    "train_steps_per_second": 3.743,
+    "inference_latency_ms_per_sample": 7.231685725632372,
+    "inference_throughput_samples_per_second": 138.28034540488213,
+    "peak_vram_mb": 1454.17236328125,
+    "avg_vram_mb": 458.124255859375,
+    "cpu_ram_mb": 1593.032734375,
+    "gpu_utilization_pct": 95.312,
+    "cpu_utilization_pct": 13.805200000000001,
+    "polling_interval_ms": 500,
+    "measurement_backend": "nvml_psutil",
+    "approximate_analytical_flops_estimate": 420436758481920.0,
+    "flops_per_sample": 56283367936.0,
+    "estimation_methodology": "Analytical estimate based on 2 FLOPs/param/token for forward pass and gradient backpropagation FLOPs weighted by trainable vs frozen weights."
+  },
+  "parameter_metrics": {
+    "trainable_parameters": 296450,
+    "total_parameters": 109780228,
+    "pct_trainable": 0.2700395193203643,
+    "checkpoint_size_mb": 14.283585548400879
+  },
+  "experiment_id": "3336b7e3"
+}
