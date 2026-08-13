@@ -5,9 +5,9 @@
     "distilbert-base-uncased__sst2": [
       {
         "method": "lora",
-        "mean_accuracy": 0.7562117737003057,
-        "mean_peak_vram_mb": 775.78173828125,
-        "mean_training_time_seconds": 362.72329999999994,
+        "mean_accuracy": 0.8734709480122325,
+        "mean_peak_vram_mb": 723.0984700520834,
+        "mean_training_time_seconds": 533.3788333333333,
         "pareto_dominated": false,
         "pareto_optimal": true
       },
@@ -24,16 +24,16 @@
         "mean_accuracy": 0.8356269113149848,
         "mean_peak_vram_mb": 979.3916015625,
         "mean_training_time_seconds": 587.4191,
-        "pareto_dominated": false,
-        "pareto_optimal": true
+        "pareto_dominated": true,
+        "pareto_optimal": false
       },
       {
         "method": "adalora",
         "mean_accuracy": 0.8352446483180428,
         "mean_peak_vram_mb": 814.16943359375,
         "mean_training_time_seconds": 647.9194666666667,
-        "pareto_dominated": false,
-        "pareto_optimal": true
+        "pareto_dominated": true,
+        "pareto_optimal": false
       }
     ],
     "distilbert-base-uncased__mrpc": [
