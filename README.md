@@ -1,14 +1,43 @@
 # Reproducibility and Benchmarking of Parameter-Efficient Fine-Tuning Methods for Transformer Models
 
-## Central Research Question
-
-> **How should practitioners choose among parameter-efficient fine-tuning (PEFT) methods under different computational constraints?**
+> A reproducible empirical benchmark of Full Fine-Tuning, LoRA, AdaLoRA, Prefix Tuning, and IA³ across BERT-base and DistilBERT on three GLUE classification tasks.
 
 While numerous PEFT methods have been proposed to reduce the cost of fine-tuning large transformer models, existing evaluations are often conducted under different experimental settings, making direct comparison difficult. This project aims to provide a **controlled, reproducible benchmark** where all methods are evaluated under identical conditions, enabling practical recommendations based on both predictive performance and computational efficiency.
 
+The central question is:
+
+> **How should practitioners choose among parameter-efficient fine-tuning methods under different computational constraints?**
+
+This is a **practical benchmark, not a new PEFT method or a formal research study**. The goal is to provide transparent measurements and useful observations rather than claim state-of-the-art results.
+
 ---
 
-# Project Objectives
+# Table of Contents
+
+- [1. Project Objectives](#1-project-objectives)
+- [2. Models Evaluated](#2-models-evaluated)
+- [3. Algorithms Evaluated](#3-algorithms-evaluated)
+- [4. Datasets](#4-datasets)
+- [5. Experimental Setup](#5-experimental-setup)
+- [6. Measured Outcomes](#6-measured-outcomes)
+- [7. Benchmark Results & Summary Table](#7-benchmark-results--summary-table)
+- [8. What Do the Results Suggest?](#8-what-do-the-results-suggest)
+  - [8.1 There is no universal PEFT winner](#81-there-is-no-universal-peft-winner)
+  - [8.2 LoRA provides a strong practical trade-off on SST-2](#82-lora-provides-a-strong-practical-trade-off-on-sst-2)
+  - [8.3 Extreme parameter efficiency comes with trade-offs](#83-extreme-parameter-efficiency-comes-with-trade-offs)
+  - [8.4 MRPC exposes a failure mode of the low-parameter methods](#84-mrpc-exposes-a-failure-mode-of-the-low-parameter-methods)
+  - [8.5 RTE shows another task-dependent degradation](#85-rte-shows-another-task-dependent-degradation)
+- [9. An Interesting AdaLoRA Observation](#9-an-interesting-adalora-observation)
+- [10. Prefix Tuning and DistilBERT](#10-prefix-tuning-and-distilbert)
+- [11. What Should a Practitioner Take Away?](#11-what-should-a-practitioner-take-away)
+- [12. Limitations](#12-limitations)
+- [13. Reproducibility](#13-reproducibility)
+- [14. Conclusion](#14-conclusion)
+  - [Project Artifacts](#project-artifacts)
+
+---
+
+# 1. Project Objectives
 
 - Reproduce influential PEFT algorithms using their official or widely adopted implementations.
 - Benchmark each method under an identical experimental setup.
@@ -26,7 +55,6 @@ The following pretrained transformer models will be fine-tuned:
 |--------|---------|
 | BERT-base | Standard encoder baseline |
 | DistilBERT | Lightweight distilled transformer |
-| RoBERTa-base *(optional extension)* | Stronger encoder baseline |
 
 ---
 
@@ -84,7 +112,6 @@ The benchmark will use standard NLP datasets that cover multiple task types.
 | SST-2 | Sentiment Classification | Accuracy |
 | MRPC | Paraphrase Detection | Accuracy, F1 |
 | RTE | Textual Entailment | Accuracy |
-| AG News *(optional extension)* | News Topic Classification | Accuracy |
 
 ---
 
@@ -129,138 +156,56 @@ This ensures differences in performance arise solely from the fine-tuning method
 
 ---
 
-# Benchmarks
-
-Each combination of:
-
-- Model
-- Dataset
-- Fine-tuning method
-
-constitutes one benchmark experiment.
-
-Example benchmark matrix:
-
-| Model | Dataset | Full FT | LoRA | AdaLoRA | Prefix | IA³ |
-|--------|----------|---------|-------|----------|---------|------|
-| BERT | SST-2 | ✓ | ✓ | ✓ | ✓ | ✓ |
-| BERT | MRPC | ✓ | ✓ | ✓ | ✓ | ✓ |
-| BERT | RTE | ✓ | ✓ | ✓ | ✓ | ✓ |
-| DistilBERT | SST-2 | ✓ | ✓ | ✓ | ✓ | ✓ |
-| DistilBERT | MRPC | ✓ | ✓ | ✓ | ✓ | ✓ |
-| DistilBERT | RTE | ✓ | ✓ | ✓ | ✓ | ✓ |
-
----
-
 # Measured Outcomes
 
-The benchmark evaluates multiple dimensions rather than focusing solely on predictive accuracy.
+Following records are measured: 
 
----
+### Predictive performance
 
-## 1. Predictive Performance
+- Accuracy
+- Precision
+- Recall
+- F1
+- Confusion matrices
+- Calibration metrics
 
-Measures task effectiveness.
+### Training efficiency
 
-| Metric | Description |
-|----------|-------------|
-| Accuracy | Classification accuracy |
-| Precision | Positive prediction quality |
-| Recall | Positive class coverage |
-| F1 Score | Harmonic mean of precision and recall |
+- Total training time
+- Epoch time
+- Training throughput
+- Optimization steps
 
----
+### Memory efficiency
 
-## 2. Training Efficiency
+- Peak GPU memory
+- Average GPU memory
+- CPU RAM usage
+- GPU utilization
 
-Measures computational cost during optimization.
+### Parameter efficiency
 
-| Metric | Description |
-|----------|-------------|
-| Training Time | Total fine-tuning duration |
-| Epoch Time | Average time per epoch |
-| Samples per Second | Training throughput |
-| Steps per Second | Optimization throughput |
+- Trainable parameter count
+- Percentage of model parameters updated
+- Fine-tuned checkpoint size
 
----
+### Inference
 
-## 3. Memory Efficiency
+- Inference latency
+- Throughput
 
-Measures hardware resource consumption.
+### Reproducibility
 
-| Metric | Description |
-|----------|-------------|
-| Peak GPU Memory | Maximum VRAM usage |
-| Average GPU Memory | Mean VRAM consumption |
-| CPU RAM Usage | Host memory consumption |
+Every run records:
 
----
-
-## 4. Parameter Efficiency
-
-Measures adaptation complexity.
-
-| Metric | Description |
-|----------|-------------|
-| Trainable Parameters | Number of updated parameters |
-| Percentage Trainable | Trainable parameters relative to total model size |
-| Checkpoint Size | Storage required for learned weights |
-
----
-
-## 5. Inference Efficiency
-
-Measures deployment performance.
-
-| Metric | Description |
-|----------|-------------|
-| Inference Latency | Time per prediction |
-| Throughput | Samples processed per second |
-
----
-
-## 6. Optimization Behaviour
-
-Measures learning dynamics.
-
-| Metric | Description |
-|----------|-------------|
-| Training Loss | Optimization progress |
-| Validation Loss | Generalization performance |
-| Convergence Epoch | Epoch where performance stabilizes |
-
----
-
-## 7. Stability
-
-Measures reproducibility.
-
-| Metric | Description |
-|----------|-------------|
-| Mean Accuracy | Average across multiple random seeds |
-| Standard Deviation | Performance variability |
-| Confidence Interval | Statistical reliability |
-
----
-
-# Expected Deliverables
-
-- Reproducible PyTorch implementation
-- Unified benchmarking pipeline
-- Benchmark results for all PEFT methods
-- Performance comparison tables
-- GPU memory comparison
-- Training speed comparison
-- Inference latency comparison
-- Parameter efficiency analysis
-- Reproducible experimental configuration
-- Technical report documenting methodology and findings
-
----
-
-# Expected Outcome
-
-Rather than proposing a new fine-tuning algorithm, this project aims to produce a reproducible empirical evaluation of existing PEFT methods under standardized conditions. The final outcome is a reproducible benchmarking framework and a practical guide that helps researchers and practitioners choose the most suitable parameter-efficient fine-tuning method based on available computational resources, memory constraints, and desired predictive performance.
+- random seed
+- experiment ID
+- Git commit
+- Python/PyTorch/Transformers versions
+- CUDA/GPU information
+- tokenizer information
+- dataset fingerprint
+- experiment configuration
 
 ---
 
@@ -305,19 +250,262 @@ Below are the aggregated empirical findings across **BERT-base** and **DistilBER
 
 ---
 
-## Technical Insights & Empirical Findings
+# 6. What Do the Results Suggest?
 
-### 1. Unexecuted Configurations (9 Runs)
-Out of the 90 targeted run executions ($2 \text{ models} \times 3 \text{ datasets} \times 5 \text{ methods} \times 3 \text{ seeds}$), 81 runs were completed and **9 runs were skipped**:
-- **Skipped**: `DistilBERT` + `Prefix Tuning` across `SST-2`, `MRPC`, and `RTE` (seeds 42, 43, 44).
-- **Reason**: In Hugging Face PEFT, Prefix Tuning requires injecting past key-value (`past_key_values`) caches into multi-head attention. `DistilBertModel` is a lightweight distilled encoder architecture that does not implement KV caching or past key-values.
+## 6.1 There is no universal PEFT winner
 
-### 2. Majority Class Collapse on MRPC (Exact 68.38% Accuracy)
-On MRPC, low-rank adapters (**LoRA**, **AdaLoRA**, **IA³**) achieved an exact accuracy of **$0.6838 \pm 0.0000$** across all random seeds. 
-- **Cause**: The MRPC validation set consists of 408 samples, of which 279 belong to Class 1 ("equivalent paraphrase"). $\frac{279}{408} = 0.6838235... \approx \mathbf{68.38\%}$.
-- **Mechanism**: Under fixed default hyperparameters without task-specific learning rate search, updating $<1\%$ of model parameters resulted in the optimizer collapsing to predict Class 1 for 100% of validation samples (confusion matrix: $\begin{bmatrix} 0 & 129 \\ 0 & 279 \end{bmatrix}$). Full Fine-Tuning (updating 100% parameters) escaped this local minimum to reach **84.89%** (DistilBERT) and **86.76%** (BERT-base).
+The benchmark does not produce one method that dominates every metric.
 
-### 3. AdaLoRA SVD Rank Allocation Dynamics
-AdaLoRA on BERT-base / SST-2 converged smoothly ($\text{Loss: } 1.90 \rightarrow 0.61$, $\text{Val Loss: } 0.66 \rightarrow 0.62$) to $66.36\% \pm 1.84\%$ across all seeds.
-- **Diagnostic Finding**: In Hugging Face PEFT, AdaLoRA requires calling `model.base_model.update_and_allocate(global_step)` during step execution to dynamically prune and allocate rank budgets. When using standard `transformers.Trainer` without a custom `AdaLoraStepCallback`, `update_and_allocate` is not invoked automatically, causing AdaLoRA to operate as an unallocated static SVD adapter.
+Instead, the methods occupy different points in an accuracy–efficiency trade-off.
+
+For example, on BERT/SST-2:
+
+- Full FT gives the highest accuracy: **92.43%**
+- Prefix Tuning reaches **90.25%** with much lower VRAM
+- LoRA reaches **89.56%** with only **0.27%** of parameters trainable
+- IA³ uses only **0.07%** trainable parameters, but accuracy falls to **80.39%**
+
+This illustrates the main practical point of the benchmark:
+
+> **Parameter efficiency, memory efficiency, training speed, and predictive performance are related, but they are not the same objective.**
+
+---
+
+## 6.2 LoRA provides a strong practical trade-off on SST-2
+
+LoRA is particularly competitive on SST-2.
+
+For BERT:
+
+| | Full FT | LoRA |
+|---|---:|---:|
+| Accuracy | 92.43% | 89.56% |
+| Peak VRAM | 2580.6 MB | 1129.6 MB |
+| Training time | 1567.8 s | 1166.9 s |
+| Trainable parameters | 109.48M | 296.5K |
+| Checkpoint | 4.18 GB | 14.49 MB |
+
+LoRA gives up around three percentage points of accuracy while substantially reducing memory, trainable parameters, and checkpoint footprint.
+
+On DistilBERT/SST-2, the trade-off is similarly favorable:
+
+> **87.35% accuracy with 781 MB peak VRAM and a 31 MB checkpoint**, compared with 89.98% accuracy and 1.46 GB peak VRAM for Full FT.
+
+Under this benchmark configuration, LoRA is therefore a strong general-purpose choice when the practitioner wants to reduce resource usage without giving up most of the predictive performance.
+
+---
+
+## 6.3 Extreme parameter efficiency comes with trade-offs
+
+IA³ is the most parameter-efficient method in the BERT experiments:
+
+> **76,034 trainable parameters — only 0.07% of BERT-base.**
+
+Its checkpoint is also only about **6 MB**.
+
+However, on BERT/SST-2 it reaches 80.39%, substantially below Full FT, LoRA, and Prefix Tuning.
+
+This demonstrates why simply minimizing the number of trainable parameters is not enough to choose an adaptation method.
+
+---
+
+## 6.4 MRPC exposes a failure mode of the low-parameter methods
+
+On MRPC, LoRA, AdaLoRA, and IA³ all achieve exactly:
+
+> **68.38 ± 0.00%**
+
+This is not a meaningful learned-performance score by itself.
+
+The MRPC validation set contains 408 examples:
+
+- 279 positive examples
+- 129 negative examples
+
+Therefore, predicting the positive class for every example gives:
+
+\[
+\frac{279}{408}=68.38\%.
+\]
+
+Inspection of the saved predictions confirms that these methods predicted the positive class for all 408 validation examples.
+
+The important conclusion is therefore:
+
+> **Under the standardized training configuration, LoRA, AdaLoRA, and IA³ failed to learn a useful decision boundary on MRPC and converged to the validation-set majority-class prediction.**
+
+This should not be interpreted as evidence that these PEFT methods are inherently incapable of solving MRPC. The benchmark does not perform task-specific hyperparameter optimization.
+
+---
+
+## 6.5 RTE shows another task-dependent degradation
+
+The RTE results show a similar, although less extreme, pattern.
+
+For BERT:
+
+- Full FT: **65.70%**
+- Prefix Tuning: **51.99%**
+- LoRA: **47.53%**
+- AdaLoRA: **45.85%**
+- IA³: **47.05%**
+
+For DistilBERT:
+
+- Full FT: **58.60%**
+- LoRA: **53.43%**
+- AdaLoRA: **53.19%**
+- IA³: **52.23%**
+
+This suggests that the practical value of PEFT can be strongly task-dependent, particularly for smaller or more difficult classification datasets.
+
+Again, these numbers describe performance **under the fixed benchmark configuration**, rather than the best achievable performance after hyperparameter tuning.
+
+---
+
+# 7. An Interesting AdaLoRA Observation
+
+AdaLoRA produced an unexpectedly low **66.36 ± 1.84%** on BERT/SST-2.
+
+Importantly, the training logs show that the model was actually learning:
+
+- Training loss decreased from approximately **1.90 to 0.61**
+- Validation loss decreased from approximately **0.66 to 0.62**
+- The behavior was consistent across all three seeds
+
+The saved confusion matrices also show that this was not simply an all-one-class prediction. Instead, the model showed a strong class imbalance in its predictions, with substantially higher recall for the positive class than for the negative class.
+
+This makes the result useful diagnostically: **loss reduction did not translate into balanced classification performance.**
+
+There is also an implementation detail worth documenting. The current benchmark uses the Hugging Face PEFT AdaLoRA configuration within the benchmark training loop, and AdaLoRA's adaptive rank allocation depends on updating its internal allocation state during training. Therefore, the current results should be treated as results for the **implemented benchmark configuration**, not as a definitive evaluation of optimally configured AdaLoRA.
+
+This is an important limitation rather than something to hide.
+
+---
+
+# 8. Prefix Tuning and DistilBERT
+
+Nine targeted runs were not executed:
+
+> DistilBERT + Prefix Tuning across SST-2, MRPC, and RTE for seeds 42–44.
+
+The reason is an architectural compatibility limitation in the current Hugging Face PEFT/Transformers setup: Prefix Tuning requires past-key-value support that the DistilBERT implementation used in this benchmark does not provide.
+
+Therefore, these configurations are reported as **N/A / skipped**, rather than assigning them a fabricated score.
+
+Prefix Tuning was successfully evaluated with BERT-base.
+
+---
+
+# 9. What Should a Practitioner Take Away?
+
+The benchmark does not support a single ranking such as "LoRA > AdaLoRA > IA³."
+
+A more useful interpretation is:
+
+| Priority | What the benchmark suggests |
+|---|---|
+| Maximum predictive performance | Full Fine-Tuning is the strongest baseline |
+| Strong accuracy with substantially lower resources | LoRA is particularly competitive |
+| Competitive BERT/SST-2 performance with lower VRAM | Prefix Tuning is interesting |
+| Extremely small adapter/checkpoint | IA³ is the most aggressive option |
+| Adaptive low-rank allocation | AdaLoRA requires careful interpretation under this standardized setup |
+| Very small/difficult datasets | Validate PEFT performance rather than assuming parameter efficiency will transfer directly |
+
+The practical choice therefore depends on the constraint:
+
+> **If accuracy is the primary objective and resources permit it, Full Fine-Tuning remains a strong baseline. If memory, storage, or trainable parameter count matter substantially, LoRA provides a particularly attractive compromise in these experiments. More aggressive parameter reduction can produce much smaller adapters, but the benchmark shows that this can come with substantial task-dependent performance degradation.**
+
+---
+
+# 10. Limitations
+
+This benchmark should be interpreted as a **controlled practical comparison**, not a comprehensive evaluation of PEFT.
+
+### Fixed hyperparameters
+
+The methods were intentionally evaluated under a common training configuration. Individual methods may perform substantially better after method-specific hyperparameter tuning.
+
+### Small task set
+
+Only three GLUE classification tasks were evaluated. The results should not be generalized to all NLP workloads.
+
+### Single hardware platform
+
+Resource measurements were collected on an RTX 3050 Laptop GPU. Training times and memory behavior will differ across hardware.
+
+### Approximate FLOPs
+
+The benchmark's analytical FLOPs values are estimates rather than hardware-level measurements of actual executed FLOPs.
+
+### AdaLoRA configuration
+
+The current AdaLoRA implementation requires careful handling of its adaptive rank allocation mechanism. The reported results therefore describe the benchmark implementation and configuration rather than an optimized AdaLoRA study.
+
+### Prefix Tuning compatibility
+
+Prefix Tuning was not evaluated on DistilBERT because of the attention/past-key-value compatibility limitation described above.
+
+### No hyperparameter search
+
+The benchmark asks how methods compare under a standardized protocol. It does not answer how well each method performs after independent optimization.
+
+---
+
+# 11. Reproducibility
+
+Each experiment is stored independently with:
+
+```text
+results/
+└── <model>/
+    └── <dataset>/
+        └── <method>/
+            └── seed<seed>/
+                ├── config/
+                ├── run.json
+                ├── metrics.json
+                ├── predictions.csv
+                ├── misclassified.csv
+                ├── train_log.csv
+                └── checkpoint/
+```
+
+The repository also contains a Jupyter analysis notebook for aggregating results and generating visualizations.
+
+The benchmark records the software environment, hardware information, random seed, Git revision, tokenizer information, and experiment configuration for each run.
+
+---
+
+# 12. Conclusion
+
+This benchmark demonstrates that PEFT is not simply a question of reducing the number of trainable parameters.
+
+Across BERT-base and DistilBERT, the methods produced substantially different combinations of:
+
+- predictive performance
+- GPU memory consumption
+- training time
+- trainable parameter count
+- checkpoint size
+
+On SST-2, LoRA and Prefix Tuning retained much of Full Fine-Tuning's predictive performance while requiring substantially fewer resources. IA³ achieved extreme parameter and checkpoint efficiency, but with a larger accuracy penalty.
+
+On MRPC and RTE, several PEFT methods degraded substantially under the fixed training configuration, with LoRA, AdaLoRA, and IA³ reaching the MRPC majority-class baseline.
+
+The main practical lesson is therefore simple:
+
+> **There is no universally best PEFT method. The appropriate choice depends on the balance between predictive performance and the computational constraints of the deployment environment.**
+
+The value of this benchmark is not in proposing a new algorithm, but in making these trade-offs **measurable, reproducible, and easy to inspect**.
+
+---
+
+## Project Artifacts
+
+- **Source code:** GitHub repository
+- **Benchmark analysis:** `notebooks/analysis.ipynb`
+- **Raw experiment artifacts:** `results/`
+- **Machine-readable metrics:** `metrics.json` files
+- **Predictions and failure analysis:** `predictions.csv` and `misclassified.csv`
 
