@@ -20,7 +20,7 @@ This is a **practical benchmark, not a new PEFT method or a formal research stud
 - [4. Datasets](#4-datasets)
 - [5. Experimental Setup](#5-experimental-setup)
 - [6. Measured Outcomes](#6-measured-outcomes)
-- [7. Benchmark Results & Summary Table](#7-benchmark-results--summary-table)
+- [7. Benchmark Results & Summary Table](#7-benchmark-results-summary-table)
 - [8. What Do the Results Suggest?](#8-what-do-the-results-suggest)
   - [8.1 There is no universal PEFT winner](#81-there-is-no-universal-peft-winner)
   - [8.2 LoRA provides a strong practical trade-off on SST-2](#82-lora-provides-a-strong-practical-trade-off-on-sst-2)
@@ -37,6 +37,7 @@ This is a **practical benchmark, not a new PEFT method or a formal research stud
 
 ---
 
+<a id="1-project-objectives"></a>
 # 1. Project Objectives
 
 - Reproduce influential PEFT algorithms using their official or widely adopted implementations.
@@ -47,7 +48,8 @@ This is a **practical benchmark, not a new PEFT method or a formal research stud
 
 ---
 
-# Models Evaluated
+<a id="2-models-evaluated"></a>
+# 2. Models Evaluated
 
 The following pretrained transformer models will be fine-tuned:
 
@@ -58,7 +60,8 @@ The following pretrained transformer models will be fine-tuned:
 
 ---
 
-# Algorithms Evaluated
+<a id="3-algorithms-evaluated"></a>
+# 3. Algorithms Evaluated
 
 ## Baseline
 
@@ -103,7 +106,8 @@ Key idea:
 
 ---
 
-# Datasets
+<a id="4-datasets"></a>
+# 4. Datasets
 
 The benchmark will use standard NLP datasets that cover multiple task types.
 
@@ -115,7 +119,8 @@ The benchmark will use standard NLP datasets that cover multiple task types.
 
 ---
 
-# Experimental Setup
+<a id="5-experimental-setup"></a>
+# 5. Experimental Setup
 
 ## Framework
 
@@ -156,7 +161,8 @@ This ensures differences in performance arise solely from the fine-tuning method
 
 ---
 
-# Measured Outcomes
+<a id="6-measured-outcomes"></a>
+# 6. Measured Outcomes
 
 Following records are measured: 
 
@@ -209,11 +215,10 @@ Every run records:
 
 ---
 
-# Benchmark Results & Key Findings
+<a id="7-benchmark-results-summary-table"></a>
+# 7. Benchmark Results & Summary Table
 
 Below are the aggregated empirical findings across **BERT-base** and **DistilBERT** on GLUE classification tasks (**SST-2**, **MRPC**, **RTE**) averaged over 3 random seeds (`42`, `43`, `44`).
-
-## Empirical Results Summary Table
 
 | Model | Dataset | Method | Accuracy ($\mu \pm \sigma$) | Peak VRAM | Training Time | Trainable Params (% Total) | Checkpoint Size |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -250,9 +255,11 @@ Below are the aggregated empirical findings across **BERT-base** and **DistilBER
 
 ---
 
-# 6. What Do the Results Suggest?
+<a id="8-what-do-the-results-suggest"></a>
+# 8. What Do the Results Suggest?
 
-## 6.1 There is no universal PEFT winner
+<a id="81-there-is-no-universal-peft-winner"></a>
+## 8.1 There is no universal PEFT winner
 
 The benchmark does not produce one method that dominates every metric.
 
@@ -271,7 +278,8 @@ This illustrates the main practical point of the benchmark:
 
 ---
 
-## 6.2 LoRA provides a strong practical trade-off on SST-2
+<a id="82-lora-provides-a-strong-practical-trade-off-on-sst-2"></a>
+## 8.2 LoRA provides a strong practical trade-off on SST-2
 
 LoRA is particularly competitive on SST-2.
 
@@ -295,7 +303,8 @@ Under this benchmark configuration, LoRA is therefore a strong general-purpose c
 
 ---
 
-## 6.3 Extreme parameter efficiency comes with trade-offs
+<a id="83-extreme-parameter-efficiency-comes-with-trade-offs"></a>
+## 8.3 Extreme parameter efficiency comes with trade-offs
 
 IA³ is the most parameter-efficient method in the BERT experiments:
 
@@ -309,7 +318,8 @@ This demonstrates why simply minimizing the number of trainable parameters is no
 
 ---
 
-## 6.4 MRPC exposes a failure mode of the low-parameter methods
+<a id="84-mrpc-exposes-a-failure-mode-of-the-low-parameter-methods"></a>
+## 8.4 MRPC exposes a failure mode of the low-parameter methods
 
 On MRPC, LoRA, AdaLoRA, and IA³ all achieve exactly:
 
@@ -338,7 +348,8 @@ This should not be interpreted as evidence that these PEFT methods are inherentl
 
 ---
 
-## 6.5 RTE shows another task-dependent degradation
+<a id="85-rte-shows-another-task-dependent-degradation"></a>
+## 8.5 RTE shows another task-dependent degradation
 
 The RTE results show a similar, although less extreme, pattern.
 
@@ -363,7 +374,8 @@ Again, these numbers describe performance **under the fixed benchmark configurat
 
 ---
 
-# 7. An Interesting AdaLoRA Observation
+<a id="9-an-interesting-adalora-observation"></a>
+# 9. An Interesting AdaLoRA Observation
 
 AdaLoRA produced an unexpectedly low **66.36 ± 1.84%** on BERT/SST-2.
 
@@ -383,7 +395,8 @@ This is an important limitation rather than something to hide.
 
 ---
 
-# 8. Prefix Tuning and DistilBERT
+<a id="10-prefix-tuning-and-distilbert"></a>
+# 10. Prefix Tuning and DistilBERT
 
 Nine targeted runs were not executed:
 
@@ -397,7 +410,8 @@ Prefix Tuning was successfully evaluated with BERT-base.
 
 ---
 
-# 9. What Should a Practitioner Take Away?
+<a id="11-what-should-a-practitioner-take-away"></a>
+# 11. What Should a Practitioner Take Away?
 
 The benchmark does not support a single ranking such as "LoRA > AdaLoRA > IA³."
 
@@ -418,7 +432,8 @@ The practical choice therefore depends on the constraint:
 
 ---
 
-# 10. Limitations
+<a id="12-limitations"></a>
+# 12. Limitations
 
 This benchmark should be interpreted as a **controlled practical comparison**, not a comprehensive evaluation of PEFT.
 
@@ -452,19 +467,26 @@ The benchmark asks how methods compare under a standardized protocol. It does no
 
 ---
 
-# 11. Reproducibility
+<a id="13-reproducibility"></a>
+# 13. Reproducibility
 
 Each experiment is stored independently with:
 
 ```text
 results/
+├── manifest.json
+├── pareto.json
+├── statistical_tests.json
 └── <model>/
     └── <dataset>/
         └── <method>/
             └── seed<seed>/
                 ├── config/
+                │   ├── global.yaml
+                │   └── method.yaml
                 ├── run.json
                 ├── metrics.json
+                ├── adapter_config.json
                 ├── predictions.csv
                 ├── misclassified.csv
                 ├── train_log.csv
@@ -477,7 +499,8 @@ The benchmark records the software environment, hardware information, random see
 
 ---
 
-# 12. Conclusion
+<a id="14-conclusion"></a>
+# 14. Conclusion
 
 This benchmark demonstrates that PEFT is not simply a question of reducing the number of trainable parameters.
 
@@ -501,6 +524,7 @@ The value of this benchmark is not in proposing a new algorithm, but in making t
 
 ---
 
+<a id="project-artifacts"></a>
 ## Project Artifacts
 
 - **Source code:** GitHub repository
@@ -508,4 +532,3 @@ The value of this benchmark is not in proposing a new algorithm, but in making t
 - **Raw experiment artifacts:** `results/`
 - **Machine-readable metrics:** `metrics.json` files
 - **Predictions and failure analysis:** `predictions.csv` and `misclassified.csv`
-
