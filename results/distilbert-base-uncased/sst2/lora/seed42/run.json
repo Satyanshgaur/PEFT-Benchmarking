@@ -1,15 +1,15 @@
 {
   "schema_version": "1.0.0",
-  "experiment_id": "fb8ddc3b",
-  "timestamp": "2026-08-05T09:58:58.718201+00:00",
-  "command": "scripts/run_single_benchmark.py --model distilbert-base-uncased --dataset sst2 --method lora --seed 42 --dry-run --no-push",
+  "experiment_id": "3bf6bb7a",
+  "timestamp": "2026-08-13T16:05:42.354964+00:00",
+  "command": "scripts/run_single_benchmark.py --model distilbert-base-uncased --dataset sst2 --method lora --seed 42",
   "seed": 42,
-  "python_version": "3.14.4",
+  "python_version": "3.14.6",
   "torch_version": "2.13.0+cu130",
   "transformers_version": "5.14.1",
   "cuda_version": "13.0",
   "gpu_name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
-  "driver_version": "595.84",
+  "driver_version": "610.57.04",
   "tokenizer": {
     "name": "distilbert-base-uncased",
     "revision": "main",
@@ -29,5 +29,5 @@
       "positive"
     ]
   },
-  "git_commit": "60043ad"
+  "git_commit": "2eca9dd"
 }

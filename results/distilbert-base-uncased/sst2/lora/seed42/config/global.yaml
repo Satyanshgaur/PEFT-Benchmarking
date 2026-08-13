@@ -10,8 +10,8 @@ seeds:
 - 43
 - 44
 training:
-  batch_size: 32
-  epochs: 1
+  batch_size: 16
+  epochs: 3
   fp16: false
   learning_rate: 2.0e-05
   max_seq_length: 128

@@ -8,8 +8,8 @@
   "inference_mode": 0,
   "r": 8,
   "target_modules": [
-    "v_lin",
-    "q_lin"
+    "q_lin",
+    "v_lin"
   ],
   "exclude_modules": null,
   "lora_alpha": 16,
