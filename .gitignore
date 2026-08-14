@@ -7,3 +7,6 @@ __pycache__/
 *.bin
 checkpoint/
 results/**/checkpoint/
+*.zip
+results_dataset/
+peft_benchmarking_results/
