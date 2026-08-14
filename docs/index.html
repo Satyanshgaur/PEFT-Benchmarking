@@ -128,7 +128,7 @@
           </li>
           <li class="architectural-item">
             <span class="arch-title">LoRA (Low-Rank Adaptation)</span>
-            <span class="arch-desc">Injects trainable rank decomposition matrices (rank $r=8$, $\alpha=16$) into self-attention projection weights while freezing pretrained weights.</span>
+            <span class="arch-desc">Injects trainable rank decomposition matrices (rank <em>r</em> = 8, &alpha; = 16) into self-attention projection weights while freezing pretrained weights.</span>
           </li>
           <li class="architectural-item">
             <span class="arch-title">AdaLoRA (Adaptive Budget Allocation LoRA)</span>
@@ -202,7 +202,7 @@
           <div class="callout-title">Fixed Benchmark Parameters</div>
           <div class="callout-body">
             <strong>Hardware:</strong> NVIDIA RTX 3050 Laptop GPU (6 GB GDDR6 VRAM), Intel Core i5-13420H, 16 GB RAM.<br>
-            <strong>Training Hyperparameters:</strong> Epochs = 3, Batch Size = 32 (SST-2) / 16 (MRPC, RTE), Optimizer = AdamW, Learning Rate = $2\times 10^{-5}$ (Full FT) / $1\times 10^{-3}$ (Adapters), Linear warmup with decay, Weight Decay = 0.01.<br>
+            <strong>Training Hyperparameters:</strong> Epochs = 3, Batch Size = 32 (SST-2) / 16 (MRPC, RTE), Optimizer = AdamW, Learning Rate = 2 &times; 10<sup>-5</sup> (Full FT) / 1 &times; 10<sup>-3</sup> (Adapters), Linear warmup with decay, Weight Decay = 0.01.<br>
             <strong>Random Seeds:</strong> Evaluated across 3 independent seeds (`42`, `43`, `44`) for all 81 combinations.
           </div>
         </div>
@@ -542,7 +542,7 @@
         <div class="figure-container">
           <img src="plots/01_accuracy_by_method.png" alt="Accuracy by Method Across GLUE Tasks" class="figure-img">
           <div class="figure-caption">
-            <strong>Figure 1:</strong> Evaluation accuracy by adaptation method across GLUE tasks and architectures with $\pm 1\sigma$ seed error bars.
+            <strong>Figure 1:</strong> Evaluation accuracy by adaptation method across GLUE tasks and architectures with &plusmn;1&sigma; seed error bars.
           </div>
         </div>
       </div>
@@ -681,7 +681,7 @@
         <div class="figure-container">
           <img src="plots/07_training_loss_curves_sst2.png" alt="SST-2 Training Loss Curves" class="figure-img">
           <div class="figure-caption">
-            <strong>Figure 6:</strong> Smoothed cross-entropy training loss trajectories on SST-2 (rolling mean, window=7) across epochs with $\pm 1\sigma$ ribbons.
+            <strong>Figure 6:</strong> Smoothed cross-entropy training loss trajectories on SST-2 (rolling mean, window=7) across epochs with &plusmn;1&sigma; ribbons.
           </div>
         </div>
 
@@ -747,7 +747,7 @@
         <div class="callout-box">
           <div class="callout-title">Statistical Caution & Inferential Limits</div>
           <div class="callout-body">
-            Comparisons are based on three random seeds (`42`, `43`, `44`), yielding $n=3$ paired observations ($df=2$). Paired $t$-tests and confidence intervals are reported as <strong>exploratory diagnostics</strong> rather than confirmatory proofs of population-level significance. Primary evidence should be judged on effect sizes, mean $\pm$ standard deviation, and measured computational savings.
+            Comparisons are based on three random seeds (`42`, `43`, `44`), yielding <em>n</em> = 3 paired observations (<em>df</em> = 2). Paired <em>t</em>-tests and confidence intervals are reported as <strong>exploratory diagnostics</strong> rather than confirmatory proofs of population-level significance. Primary evidence should be judged on effect sizes, mean &plusmn; standard deviation, and measured computational savings.
           </div>
         </div>
 
@@ -762,7 +762,7 @@
         <ul class="architectural-list">
           <li class="architectural-item">
             <span class="arch-title">Fixed Hyperparameters</span>
-            <span class="arch-desc">All algorithms were tested under fixed learning rates ($2\times 10^{-5}$ / $1\times 10^{-3}$). Methods may perform better under independent per-task hyperparameter tuning.</span>
+            <span class="arch-desc">All algorithms were tested under fixed learning rates (2 &times; 10<sup>-5</sup> / 1 &times; 10<sup>-3</sup>). Methods may perform better under independent per-task hyperparameter tuning.</span>
           </li>
           <li class="architectural-item">
             <span class="arch-title">Task Scope</span>
@@ -772,6 +772,8 @@
             <span class="arch-title">Hardware Specifics</span>
             <span class="arch-desc">Measurements collected on an NVIDIA RTX 3050 Laptop GPU (6 GB VRAM). Memory fragmentation and timings vary on data-center GPUs.</span>
           </li>
+        </ul>
+
         <h3 class="sub-heading">Project Artifacts</h3>
         <ul class="architectural-list">
           <li class="architectural-item">
