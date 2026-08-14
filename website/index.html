@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PEFT Benchmarking — Empirical Evaluation of Transformer Adaptation</title>
+  <meta name="description" content="A reproducible empirical benchmark of Full Fine-Tuning, LoRA, AdaLoRA, Prefix Tuning, and IA³ across BERT-base and DistilBERT on GLUE tasks.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Distributed Top Nav -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <a href="#overview" class="nav-anchor">PEFT BENCHMARKING</a>
+      <span class="nav-desc">Empirical Transformer Adaptation Suite</span>
+      <ul class="nav-links">
+        <li><a href="#benchmark-results" class="nav-link">Results</a></li>
+        <li><a href="#resource-tradeoffs" class="nav-link">Trade-offs</a></li>
+        <li><a href="#failure-modes" class="nav-link">Diagnostics</a></li>
+        <li><a href="#recommendations" class="nav-link">Guide</a></li>
+        <li><a href="https://github.com/Satyanshgaur/PEFT-Benchmarking" target="_blank" rel="noopener" class="nav-link">GitHub</a></li>
+      </ul>
+      <span class="nav-status">81 Runs Verified</span>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       SECTION 01: OVERVIEW & OBJECTIVES (Plaster White)
+       ========================================================================= -->
+  <section id="overview" class="surface-light" data-surface="light">
+    <div class="section-wrapper">
+      <div class="content-column">
+        <span class="section-label">01 / Motivation & Project Scope</span>
+        <h1 class="hero-display">Reproducibility and Benchmarking of Parameter-Efficient Fine-Tuning</h1>
+        <p class="lead-text">
+          A controlled empirical benchmark comparing <strong>Full Fine-Tuning</strong>, <strong>LoRA</strong>, <strong>AdaLoRA</strong>, <strong>Prefix Tuning</strong>, and <strong>IA³</strong> across <strong>BERT-base</strong> and <strong>DistilBERT</strong> on three GLUE tasks under identical experimental conditions.
+        </p>
+
+        <p class="body-p">
+          While numerous parameter-efficient fine-tuning (PEFT) methods have been proposed to reduce the computational cost of adapting large transformer models, existing evaluations are often conducted under disparate training protocols, learning rate schedules, and batch sizes—making direct practical comparison difficult.
+        </p>
+
+        <p class="body-p">
+          This benchmark was created to evaluate these methods under an <strong>identical experimental pipeline</strong> on consumer hardware, measuring both predictive performance and computational resource consumption (peak GPU VRAM, training time, parameter budget, and checkpoint disk storage).
+        </p>
+
+        <div class="callout-box">
+          <div class="callout-title">The Central Practical Question</div>
+          <div class="callout-body">
+            <strong>How should practitioners choose among parameter-efficient fine-tuning methods under different computational and hardware constraints?</strong>
+            <br><br>
+            <em>This is a practical benchmark measuring resource trade-offs under identical training conditions rather than a new PEFT method or a formal claim of state-of-the-art results.</em>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value">81</div>
+            <div class="stat-label">Total Experiment Runs</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Adaptation Algorithms</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">3</div>
+            <div class="stat-label">GLUE Benchmark Tasks</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Random Seeds (42, 43, 44)</div>
+          </div>
+        </div>
+
+        <h3 class="sub-heading">Core Benchmark Objectives</h3>
+        <ul class="architectural-list">
+          <li class="architectural-item">
+            <span class="arch-title">Controlled Replication</span>
+            <span class="arch-desc">Reproduce influential PEFT algorithms using official implementations (Hugging Face PEFT) under a unified training loop.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">Multi-Dimensional Resource Profiling</span>
+            <span class="arch-desc">Measure predictive accuracy alongside peak GPU VRAM, fine-tuning time, % trainable parameters, and checkpoint size.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">Empirical Evidence & Failure Mode Analysis</span>
+            <span class="arch-desc">Identify task-dependent failure boundaries (such as majority-class prediction collapse) without hiding negative results.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">Open Reproducibility</span>
+            <span class="arch-desc">Release all raw metrics, per-step training logs, predictions, and visualization code as an open dataset.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 02: MODELS & ALGORITHMS EVALUATED (Carbon Dark)
+       ========================================================================= -->
+  <section id="algorithms" class="surface-dark" data-surface="dark">
+    <div class="section-wrapper">
+      <div class="content-column">
+        <span class="section-label">02 / Evaluated Architectures & Methods</span>
+        <h2 class="section-heading">Pretrained Backbones & Adaptation Techniques</h2>
+        <p class="lead-text">
+          Two encoder architectures evaluated across five distinct parameter adaptation paradigms.
+        </p>
+
+        <h3 class="sub-heading">Transformer Backbones</h3>
+        <ul class="architectural-list">
+          <li class="architectural-item">
+            <span class="arch-title">BERT-base-uncased (109.5M Parameters)</span>
+            <span class="arch-desc">Standard 12-layer, 768-hidden dimension bidirectional transformer encoder serving as the primary baseline.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">DistilBERT-base-uncased (67.0M Parameters)</span>
+            <span class="arch-desc">Lightweight 6-layer distilled transformer retaining ~97% of BERT's language comprehension with 40% fewer parameters.</span>
+          </li>
+        </ul>
+
+        <h3 class="sub-heading">Adaptation Algorithms</h3>
+        <ul class="architectural-list">
+          <li class="architectural-item">
+            <span class="arch-title">Full Fine-Tuning (Reference Baseline)</span>
+            <span class="arch-desc">All model parameters updated via backpropagation. Serves as the empirical reference baseline for maximum accuracy.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">LoRA (Low-Rank Adaptation)</span>
+            <span class="arch-desc">Injects trainable rank decomposition matrices (rank $r=8$, $\alpha=16$) into self-attention projection weights while freezing pretrained weights.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">AdaLoRA (Adaptive Budget Allocation LoRA)</span>
+            <span class="arch-desc">Dynamically allocates low-rank parameter budget across layers using singular value decomposition (SVD) importance scoring.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">Prefix Tuning</span>
+            <span class="arch-desc">Prepends learnable continuous virtual prefix tokens (30 virtual tokens) to key and value attention sequences across layers.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">IA³ (Infused Adapter by Inhibiting and Amplifying Inner Activations)</span>
+            <span class="arch-desc">Scales inner activations via learned multiplicative vectors injected into key, value, and feed-forward projections with minimal parameters.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 03: DATASETS & CONTROLLED PROTOCOL (Plaster White)
+       ========================================================================= -->
+  <section id="protocol" class="surface-light" data-surface="light">
+    <div class="section-wrapper">
+      <div class="content-column">
+        <span class="section-label">03 / Experimental Protocol & Control</span>
+        <h2 class="section-heading">Standardized Benchmark Configuration</h2>
+        <p class="lead-text">
+          All algorithms were executed on identical hardware with fixed hyperparameters to isolate the exact impact of parameter adaptation.
+        </p>
+
+        <h3 class="sub-heading">GLUE Benchmark Tasks</h3>
+        <div class="table-responsive">
+          <table class="benchmark-table">
+            <thead>
+              <tr>
+                <th>Dataset</th>
+                <th>Task Type</th>
+                <th>Train Samples</th>
+                <th>Validation Samples</th>
+                <th>Primary Metric</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-bold">SST-2</td>
+                <td>Sentiment Classification</td>
+                <td>67,349</td>
+                <td>872</td>
+                <td>Accuracy</td>
+              </tr>
+              <tr>
+                <td class="td-bold">MRPC</td>
+                <td>Paraphrase Detection</td>
+                <td>3,668</td>
+                <td>408</td>
+                <td>Accuracy, F1</td>
+              </tr>
+              <tr>
+                <td class="td-bold">RTE</td>
+                <td>Textual Entailment</td>
+                <td>2,490</td>
+                <td>277</td>
+                <td>Accuracy</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="sub-heading">Controlled Variables & Hardware</h3>
+        <div class="callout-box">
+          <div class="callout-title">Fixed Benchmark Parameters</div>
+          <div class="callout-body">
+            <strong>Hardware:</strong> NVIDIA RTX 3050 Laptop GPU (6 GB GDDR6 VRAM), Intel Core i5-13420H, 16 GB RAM.<br>
+            <strong>Training Hyperparameters:</strong> Epochs = 3, Batch Size = 32 (SST-2) / 16 (MRPC, RTE), Optimizer = AdamW, Learning Rate = $2\times 10^{-5}$ (Full FT) / $1\times 10^{-3}$ (Adapters), Linear warmup with decay, Weight Decay = 0.01.<br>
+            <strong>Random Seeds:</strong> Evaluated across 3 independent seeds (`42`, `43`, `44`) for all 81 combinations.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 04: BENCHMARK RESULTS (Carbon Dark)
+       ========================================================================= -->
+  <section id="benchmark-results" class="surface-dark" data-surface="dark">
+    <div class="section-wrapper">
+      <div class="content-column">
+        <span class="section-label">04 / Experimental Benchmark Results</span>
+        <h2 class="section-heading">Aggregated Empirical Results Summary</h2>
+        <p class="lead-text">
+          Evaluation accuracy, peak GPU memory footprint, fine-tuning time, trainable parameters, and checkpoint storage averaged across 3 random seeds.
+        </p>
+
+        <!-- Interactive Filters -->
+        <div class="table-controls">
+          <div class="filter-group">
+            <span class="filter-label">Model:</span>
+            <button class="filter-btn active" data-model-filter="all">All</button>
+            <button class="filter-btn" data-model-filter="bert-base-uncased">BERT-base</button>
+            <button class="filter-btn" data-model-filter="distilbert-base-uncased">DistilBERT</button>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Task:</span>
+            <button class="filter-btn active" data-dataset-filter="all">All</button>
+            <button class="filter-btn" data-dataset-filter="sst2">SST-2</button>
+            <button class="filter-btn" data-dataset-filter="mrpc">MRPC</button>
+            <button class="filter-btn" data-dataset-filter="rte">RTE</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="benchmark-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Task</th>
+                <th>Method</th>
+                <th>Accuracy (μ ± σ)</th>
+                <th>Peak VRAM</th>
+                <th>Train Time</th>
+                <th>Trainable Params</th>
+                <th>Checkpoint</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- DistilBERT SST-2 -->
+              <tr data-model="distilbert-base-uncased" data-dataset="sst2">
+                <td class="td-bold">DistilBERT</td>
+                <td>SST-2</td>
+                <td class="td-method">Full Fine-Tuning</td>
+                <td>0.8998 ± 0.0026</td>
+                <td>1459.8 MB</td>
+                <td>782.5 s</td>
+                <td>66,955,010 (100.00%)</td>
+                <td>2557.44 MB</td>
+              </tr>
+              <tr data-model="distilbert-base-uncased" data-dataset="sst2">
+                <td class="td-bold">DistilBERT</td>
+                <td>SST-2</td>
+                <td class="td-method">LoRA</td>
+                <td>0.8735 ± 0.0083</td>
+                <td>781.4 MB</td>
+                <td>412.9 s</td>
+                <td>739,586 (1.09%)</td>
+                <td>31.14 MB</td>
+              </tr>
+              <tr data-model="distilbert-base-uncased" data-dataset="sst2">
+                <td class="td-bold">DistilBERT</td>
+                <td>SST-2</td>
+                <td class="td-method">AdaLoRA</td>
+                <td>0.8352 ± 0.0024</td>
+                <td>814.2 MB</td>
+                <td>647.9 s</td>
+                <td>813,458 (1.20%)</td>
+                <td>34.18 MB</td>
+              </tr>
+              <tr data-model="distilbert-base-uncased" data-dataset="sst2">
+                <td class="td-bold">DistilBERT</td>
+                <td>SST-2</td>
+                <td class="td-method">IA³</td>
+                <td>0.8356 ± 0.0013</td>
+                <td>979.4 MB</td>
+                <td>587.4 s</td>
+                <td>619,778 (0.92%)</td>
+                <td>26.74 MB</td>
+              </tr>
+
+              <!-- DistilBERT MRPC -->
+              <tr data-model="distilbert-base-uncased" data-dataset="mrpc">
+                <td class="td-bold">DistilBERT</td>
+                <td>MRPC</td>
+                <td class="td-method">Full Fine-Tuning</td>
+                <td>0.8489 ± 0.0028</td>
+                <td>1843.2 MB</td>
+                <td>86.2 s</td>
+                <td>66,955,010 (100.00%)</td>
+                <td>2557.23 MB</td>
+              </tr>
+              <tr data-model="distilbert-base-uncased" data-dataset="mrpc">
+                <td class="td-bold">DistilBERT</td>
+                <td>MRPC</td>
+                <td class="td-method">LoRA</td>
+                <td>0.6838 ± 0.0000</td>
+                <td>1115.9 MB</td>
+                <td>64.8 s</td>
+                <td>739,586 (1.09%)</td>
+                <td>31.12 MB</td>
+              </tr>
+              <tr data-model="distilbert-base-uncased" data-dataset="mrpc">
+                <td class="td-bold">DistilBERT</td>
+                <td>MRPC</td>
+                <td class="td-method">AdaLoRA</td>
+                <td>0.6838 ± 0.0000</td>
+                <td>1118.6 MB</td>
+                <td>66.8 s</td>
+                <td>813,458 (1.20%)</td>
+                <td>33.97 MB</td>
+              </tr>
+              <tr data-model="distilbert-base-uncased" data-dataset="mrpc">
+                <td class="td-bold">DistilBERT</td>
+                <td>MRPC</td>
+                <td class="td-method">IA³</td>
+                <td>0.6838 ± 0.0000</td>
+                <td>1374.1 MB</td>
+                <td>64.5 s</td>
+                <td>619,778 (0.92%)</td>
+                <td>26.53 MB</td>
+              </tr>
+
+              <!-- DistilBERT RTE -->
+              <tr data-model="distilbert-base-uncased" data-dataset="rte">
+                <td class="td-bold">DistilBERT</td>
+                <td>RTE</td>
+                <td class="td-method">Full Fine-Tuning</td>
+                <td>0.5860 ± 0.0290</td>
+                <td>2090.7 MB</td>
+                <td>81.8 s</td>
+                <td>66,955,010 (100.00%)</td>
+                <td>2557.23 MB</td>
+              </tr>
+              <tr data-model="distilbert-base-uncased" data-dataset="rte">
+                <td class="td-bold">DistilBERT</td>
+                <td>RTE</td>
+                <td class="td-method">LoRA</td>
+                <td>0.5343 ± 0.0201</td>
+                <td>1305.0 MB</td>
+                <td>61.2 s</td>
+                <td>739,586 (1.09%)</td>
+                <td>31.11 MB</td>
+              </tr>
+              <tr data-model="distilbert-base-uncased" data-dataset="rte">
+                <td class="td-bold">DistilBERT</td>
+                <td>RTE</td>
+                <td class="td-method">AdaLoRA</td>
+                <td>0.5319 ± 0.0240</td>
+                <td>1307.8 MB</td>
+                <td>62.9 s</td>
+                <td>813,458 (1.20%)</td>
+                <td>33.96 MB</td>
+              </tr>
+              <tr data-model="distilbert-base-uncased" data-dataset="rte">
+                <td class="td-bold">DistilBERT</td>
+                <td>RTE</td>
+                <td class="td-method">IA³</td>
+                <td>0.5223 ± 0.0240</td>
+                <td>1625.3 MB</td>
+                <td>61.2 s</td>
+                <td>619,778 (0.92%)</td>
+                <td>26.52 MB</td>
+              </tr>
+
+              <!-- BERT-base SST-2 -->
+              <tr data-model="bert-base-uncased" data-dataset="sst2">
+                <td class="td-bold">BERT-base</td>
+                <td>SST-2</td>
+                <td class="td-method">Full Fine-Tuning</td>
+                <td>0.9243 ± 0.0041</td>
+                <td>2580.6 MB</td>
+                <td>1567.8 s</td>
+                <td>109,483,778 (100.00%)</td>
+                <td>4180.07 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="sst2">
+                <td class="td-bold">BERT-base</td>
+                <td>SST-2</td>
+                <td class="td-method">LoRA</td>
+                <td>0.8956 ± 0.0040</td>
+                <td>1129.6 MB</td>
+                <td>1166.9 s</td>
+                <td>296,450 (0.27%)</td>
+                <td>14.49 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="sst2">
+                <td class="td-bold">BERT-base</td>
+                <td>SST-2</td>
+                <td class="td-method">AdaLoRA</td>
+                <td>0.6636 ± 0.0184</td>
+                <td>956.0 MB</td>
+                <td>1061.3 s</td>
+                <td>444,194 (0.40%)</td>
+                <td>20.41 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="sst2">
+                <td class="td-bold">BERT-base</td>
+                <td>SST-2</td>
+                <td class="td-method">Prefix Tuning</td>
+                <td>0.9025 ± 0.0020</td>
+                <td>1055.1 MB</td>
+                <td>1125.3 s</td>
+                <td>14,781,698 (11.90%)</td>
+                <td>347.25 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="sst2">
+                <td class="td-bold">BERT-base</td>
+                <td>SST-2</td>
+                <td class="td-method">IA³</td>
+                <td>0.8039 ± 0.0064</td>
+                <td>1143.2 MB</td>
+                <td>1022.7 s</td>
+                <td>76,034 (0.07%)</td>
+                <td>6.34 MB</td>
+              </tr>
+
+              <!-- BERT-base MRPC -->
+              <tr data-model="bert-base-uncased" data-dataset="mrpc">
+                <td class="td-bold">BERT-base</td>
+                <td>MRPC</td>
+                <td class="td-method">Full Fine-Tuning</td>
+                <td>0.8676 ± 0.0088</td>
+                <td>2321.0 MB</td>
+                <td>225.9 s</td>
+                <td>109,483,778 (100.00%)</td>
+                <td>4179.87 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="mrpc">
+                <td class="td-bold">BERT-base</td>
+                <td>MRPC</td>
+                <td class="td-method">LoRA</td>
+                <td>0.6838 ± 0.0000</td>
+                <td>1270.7 MB</td>
+                <td>140.6 s</td>
+                <td>296,450 (0.27%)</td>
+                <td>14.29 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="mrpc">
+                <td class="td-bold">BERT-base</td>
+                <td>MRPC</td>
+                <td class="td-method">AdaLoRA</td>
+                <td>0.6838 ± 0.0000</td>
+                <td>1273.8 MB</td>
+                <td>126.3 s</td>
+                <td>444,194 (0.40%)</td>
+                <td>19.99 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="mrpc">
+                <td class="td-bold">BERT-base</td>
+                <td>MRPC</td>
+                <td class="td-method">Prefix Tuning</td>
+                <td>0.7312 ± 0.0102</td>
+                <td>1314.1 MB</td>
+                <td>123.3 s</td>
+                <td>14,781,698 (11.90%)</td>
+                <td>346.83 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="mrpc">
+                <td class="td-bold">BERT-base</td>
+                <td>MRPC</td>
+                <td class="td-method">IA³</td>
+                <td>0.6838 ± 0.0000</td>
+                <td>1564.4 MB</td>
+                <td>121.3 s</td>
+                <td>76,034 (0.07%)</td>
+                <td>5.92 MB</td>
+              </tr>
+
+              <!-- BERT-base RTE -->
+              <tr data-model="bert-base-uncased" data-dataset="rte">
+                <td class="td-bold">BERT-base</td>
+                <td>RTE</td>
+                <td class="td-method">Full Fine-Tuning</td>
+                <td>0.6570 ± 0.0108</td>
+                <td>2546.0 MB</td>
+                <td>171.6 s</td>
+                <td>109,483,778 (100.00%)</td>
+                <td>4179.86 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="rte">
+                <td class="td-bold">BERT-base</td>
+                <td>RTE</td>
+                <td class="td-method">LoRA</td>
+                <td>0.4753 ± 0.0326</td>
+                <td>1454.2 MB</td>
+                <td>125.1 s</td>
+                <td>296,450 (0.27%)</td>
+                <td>14.28 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="rte">
+                <td class="td-bold">BERT-base</td>
+                <td>RTE</td>
+                <td class="td-method">AdaLoRA</td>
+                <td>0.4585 ± 0.0108</td>
+                <td>1457.5 MB</td>
+                <td>131.3 s</td>
+                <td>444,194 (0.40%)</td>
+                <td>19.98 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="rte">
+                <td class="td-bold">BERT-base</td>
+                <td>RTE</td>
+                <td class="td-method">Prefix Tuning</td>
+                <td>0.5199 ± 0.0253</td>
+                <td>1468.2 MB</td>
+                <td>127.4 s</td>
+                <td>14,781,698 (11.90%)</td>
+                <td>346.82 MB</td>
+              </tr>
+              <tr data-model="bert-base-uncased" data-dataset="rte">
+                <td class="td-bold">BERT-base</td>
+                <td>RTE</td>
+                <td class="td-method">IA³</td>
+                <td>0.4705 ± 0.0398</td>
+                <td>1805.1 MB</td>
+                <td>129.3 s</td>
+                <td>76,034 (0.07%)</td>
+                <td>5.91 MB</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="figure-container">
+          <img src="plots/01_accuracy_by_method.png" alt="Accuracy by Method Across GLUE Tasks" class="figure-img">
+          <div class="figure-caption">
+            <strong>Figure 1:</strong> Evaluation accuracy by adaptation method across GLUE tasks and architectures with $\pm 1\sigma$ seed error bars.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 05: RESOURCE TRADE-OFFS (Plaster White)
+       ========================================================================= -->
+  <section id="resource-tradeoffs" class="surface-light" data-surface="light">
+    <div class="section-wrapper">
+      <div class="content-column">
+        <span class="section-label">05 / Memory, Speed & Storage Analysis</span>
+        <h2 class="section-heading">Accuracy–Resource Trade-offs</h2>
+        <p class="lead-text">
+          Parameter efficiency, memory reduction, training speed, and checkpoint storage are distinct objectives that do not scale identically.
+        </p>
+
+        <h3 class="sub-heading">LoRA's Practical Sweet Spot on SST-2</h3>
+        <p class="body-p">
+          On SST-2 sentiment classification, LoRA retains ~97% of Full Fine-Tuning accuracy while drastically lowering hardware barriers:
+        </p>
+
+        <div class="table-responsive">
+          <table class="benchmark-table">
+            <thead>
+              <tr>
+                <th>Metric (BERT / SST-2)</th>
+                <th>Full Fine-Tuning</th>
+                <th>LoRA</th>
+                <th>Relative Savings</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-bold">Accuracy</td>
+                <td>92.43%</td>
+                <td>89.56%</td>
+                <td>-2.87% diff</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Peak GPU VRAM</td>
+                <td>2580.6 MB</td>
+                <td>1129.6 MB</td>
+                <td>-56.2% VRAM</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Training Duration</td>
+                <td>1567.8 s</td>
+                <td>1166.9 s</td>
+                <td>-25.6% time</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Trainable Parameters</td>
+                <td>109,483,778 (100%)</td>
+                <td>296,450 (0.27%)</td>
+                <td>-99.73% params</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Checkpoint Size</td>
+                <td>4180.1 MB</td>
+                <td>14.49 MB</td>
+                <td>-99.65% storage</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="figure-container">
+          <img src="plots/02_accuracy_vs_peak_vram.png" alt="Accuracy vs Peak GPU VRAM" class="figure-img">
+          <div class="figure-caption">
+            <strong>Figure 2:</strong> Accuracy vs. Peak GPU VRAM footprint demonstrating LoRA and Prefix Tuning's memory reduction.
+          </div>
+        </div>
+
+        <h3 class="sub-heading">Extreme Parameter & Checkpoint Efficiency</h3>
+        <p class="body-p">
+          IA³ is the most parameter-efficient method evaluated, tuning only <strong>76,034 parameters (~0.07%)</strong> on BERT-base with a <strong>6.3 MB checkpoint</strong>. However, on SST-2 its accuracy dropped to 80.39%, demonstrating that aggressive parameter minimization can induce an accuracy penalty.
+        </p>
+
+        <div class="figure-container">
+          <img src="plots/05_trainable_parameters_pct.png" alt="Trainable Parameters %" class="figure-img">
+          <div class="figure-caption">
+            <strong>Figure 3:</strong> Trainable parameter percentage and absolute counts on a logarithmic scale.
+          </div>
+        </div>
+
+        <div class="figure-container">
+          <img src="plots/06_checkpoint_size.png" alt="Checkpoint Size" class="figure-img">
+          <div class="figure-caption">
+            <strong>Figure 4:</strong> Checkpoint storage footprint comparison (excluding optimizer state) illustrating 99.5%–99.8% disk space savings.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 06: FAILURE MODES & DIAGNOSTICS (Carbon Dark)
+       ========================================================================= -->
+  <section id="failure-modes" class="surface-dark" data-surface="dark">
+    <div class="section-wrapper">
+      <div class="content-column">
+        <span class="section-label">06 / Diagnostic Failure Analysis</span>
+        <h2 class="section-heading">Task Degradations & Decision Boundary Collapse</h2>
+        <p class="lead-text">
+          Controlled benchmarking reveals critical edge cases where parameter-efficient methods fail under uniform training recipes.
+        </p>
+
+        <div class="callout-box">
+          <div class="callout-title">⚠️ Crucial MRPC Majority-Class Baseline Caveat</div>
+          <div class="callout-body">
+            The MRPC validation set contains <strong>408 instances: 279 positive (68.38%) and 129 negative (31.62%)</strong>.
+            <br><br>
+            Under the standardized training configuration, <strong>LoRA, AdaLoRA, and IA³ all predicted the positive class for 100% of the validation examples</strong>, producing an accuracy score of exactly <strong>68.38%</strong>.
+            <br><br>
+            This score represents <strong>majority-class baseline collapse</strong>, not learned paraphrase comprehension. In contrast, Prefix Tuning reached <strong>73.12%</strong> and Full Fine-Tuning reached <strong>86.76%</strong>.
+          </div>
+        </div>
+
+        <div class="figure-container">
+          <img src="plots/08_confusion_matrices_bert.png" alt="Confusion Matrix Diagnostics" class="figure-img">
+          <div class="figure-caption">
+            <strong>Figure 5:</strong> Confusion matrix diagnostics for BERT-base across SST-2, MRPC, and RTE, exposing the majority-class failure mode on MRPC.
+          </div>
+        </div>
+
+        <h3 class="sub-heading">AdaLoRA Training Dynamics on SST-2</h3>
+        <p class="body-p">
+          AdaLoRA achieved an unexpectedly low <strong>66.36 ± 1.84%</strong> accuracy on BERT/SST-2 despite its training loss steadily decreasing from <strong>1.90 to 0.61</strong> across epochs.
+        </p>
+        <p class="body-p">
+          Inspection of predictions revealed strong class imbalance in its output probabilities (predicting the positive class with disproportionate confidence). This provides an important empirical lesson: <em>consistent loss reduction does not guarantee balanced decision boundary convergence.</em>
+        </p>
+
+        <div class="figure-container">
+          <img src="plots/07_training_loss_curves_sst2.png" alt="SST-2 Training Loss Curves" class="figure-img">
+          <div class="figure-caption">
+            <strong>Figure 6:</strong> Smoothed cross-entropy training loss trajectories on SST-2 (rolling mean, window=7) across epochs with $\pm 1\sigma$ ribbons.
+          </div>
+        </div>
+
+        <h3 class="sub-heading">Prefix Tuning Architectural Compatibility</h3>
+        <p class="body-p">
+          Nine targeted runs (DistilBERT + Prefix Tuning across SST-2, MRPC, RTE for seeds 42–44) were skipped and recorded as <strong>N/A</strong> due to an architectural constraint: DistilBERT does not expose past-key-value cache arguments required by Prefix Tuning in the tested Transformers release.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 07: PRACTITIONER RECOMMENDATIONS (Plaster White)
+       ========================================================================= -->
+  <section id="recommendations" class="surface-light" data-surface="light">
+    <div class="section-wrapper">
+      <div class="content-column">
+        <span class="section-label">07 / Evidence-Based Decision Guide</span>
+        <h2 class="section-heading">Practitioner Recommendations & Limitations</h2>
+        <p class="lead-text">
+          Choosing an adaptation method depends on hardware constraints, storage limits, and task characteristics.
+        </p>
+
+        <div class="table-responsive">
+          <table class="benchmark-table">
+            <thead>
+              <tr>
+                <th>Priority / Constraint</th>
+                <th>Observed in Benchmark</th>
+                <th>Practical Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-bold">Highest accuracy in this benchmark</td>
+                <td>Full Fine-Tuning achieved highest accuracy (92.4% SST-2, 86.8% MRPC, 65.7% RTE) as the reference baseline.</td>
+                <td>Use Full Fine-Tuning when GPU VRAM and checkpoint storage are unconstrained.</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Best accuracy/resource trade-off</td>
+                <td>LoRA achieved 89.56% on BERT/SST-2 and 87.35% on DistilBERT with ~35%–56% VRAM reduction.</td>
+                <td>LoRA provides the most reliable general-purpose balance between resource savings and accuracy.</td>
+              </tr>
+              <tr>
+                <td class="td-bold">High accuracy with fixed VRAM</td>
+                <td>Prefix Tuning reached 90.25% on BERT/SST-2 and resisted MRPC collapse better (73.12%).</td>
+                <td>Consider Prefix Tuning for encoder backbones when higher parameter capacity (~11.9%) is acceptable.</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Highest parameter efficiency</td>
+                <td>IA³ tuned only 76,034 params (~0.07%) with a 6.3 MB checkpoint, but accuracy dropped to 80.39% on SST-2.</td>
+                <td>Use IA³ when checkpoint size is the primary constraint and moderate accuracy loss is acceptable.</td>
+              </tr>
+              <tr>
+                <td class="td-bold">Small / Imbalanced Datasets</td>
+                <td>Low-parameter adapters collapsed to predicting the majority class on MRPC (68.38%) under fixed learning rates.</td>
+                <td>Always validate PEFT decision boundaries on small datasets rather than assuming hyperparameter transferability.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout-box">
+          <div class="callout-title">Statistical Caution & Inferential Limits</div>
+          <div class="callout-body">
+            Comparisons are based on three random seeds (`42`, `43`, `44`), yielding $n=3$ paired observations ($df=2$). Paired $t$-tests and confidence intervals are reported as <strong>exploratory diagnostics</strong> rather than confirmatory proofs of population-level significance. Primary evidence should be judged on effect sizes, mean $\pm$ standard deviation, and measured computational savings.
+          </div>
+        </div>
+
+        <div class="figure-container">
+          <img src="plots/11_seed_variability.png" alt="Seed Variability Dot Plot" class="figure-img">
+          <div class="figure-caption">
+            <strong>Figure 7:</strong> Individual evaluation accuracy across random seeds (Seeds 42, 43, 44) alongside seed means.
+          </div>
+        </div>
+
+        <h3 class="sub-heading">Benchmark Validity Boundaries</h3>
+        <ul class="architectural-list">
+          <li class="architectural-item">
+            <span class="arch-title">Fixed Hyperparameters</span>
+            <span class="arch-desc">All algorithms were tested under fixed learning rates ($2\times 10^{-5}$ / $1\times 10^{-3}$). Methods may perform better under independent per-task hyperparameter tuning.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">Task Scope</span>
+            <span class="arch-desc">Evaluated on three GLUE classification benchmarks. Results may differ on generation, reasoning, or long-context tasks.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">Hardware Specifics</span>
+            <span class="arch-desc">Measurements collected on an NVIDIA RTX 3050 Laptop GPU (6 GB VRAM). Memory fragmentation and timings vary on data-center GPUs.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SECTION 08: REPRODUCIBILITY & ARTIFACTS (Carbon Dark)
+       ========================================================================= -->
+  <section id="reproducibility" class="surface-dark" data-surface="dark">
+    <div class="section-wrapper">
+      <div class="content-column">
+        <span class="section-label">08 / Open Science & Reproducibility</span>
+        <h2 class="section-heading">Pipeline Replication & Artifacts</h2>
+        <p class="lead-text">
+          Every experiment run is archived with full configurations, loss logs, predictions, and diagnostic metrics.
+        </p>
+
+        <h3 class="sub-heading">Experiment Directory Structure</h3>
+        <pre class="code-block"><code>results/
+├── manifest.json
+├── pareto.json
+├── statistical_tests.json
+└── &lt;model&gt;/
+    └── &lt;dataset&gt;/
+        └── &lt;method&gt;/
+            └── seed&lt;seed&gt;/
+                ├── config/
+                │   ├── global.yaml
+                │   └── method.yaml
+                ├── run.json
+                ├── metrics.json
+                ├── predictions.csv
+                ├── misclassified.csv
+                └── train_log.csv</code></pre>
+
+        <h3 class="sub-heading">Replication Commands</h3>
+        <pre class="code-block"><code># Clone repository
+git clone https://github.com/Satyanshgaur/PEFT-Benchmarking.git
+cd PEFT-Benchmarking
+
+# Install dependencies
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Run single experiment
+python -m src.cli.main --model bert-base-uncased --dataset sst2 --method lora --seed 42
+
+# Generate plots
+python scripts/generate_plots.py</code></pre>
+
+        <h3 class="sub-heading">Project Artifacts</h3>
+        <ul class="architectural-list">
+          <li class="architectural-item">
+            <span class="arch-title">Analysis Notebook</span>
+            <span class="arch-desc"><code>notebooks/analysis.ipynb</code> — Self-contained Jupyter notebook supporting Kaggle dataset loading and visualization.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">Kaggle Benchmark Dataset</span>
+            <span class="arch-desc"><a href="https://www.kaggle.com/datasets/satyanshgaur1/peft-benchmarking-results" target="_blank" rel="noopener" style="color: #60a5fa; text-decoration: underline;">kaggle/input/datasets/satyanshgaur1/peft-benchmarking-results</a> — Complete 81-run dataset with plots and metrics.</span>
+          </li>
+          <li class="architectural-item">
+            <span class="arch-title">Visualization Suite</span>
+            <span class="arch-desc"><code>plots/</code> — 12 publication-quality high-resolution figures generated by <code>scripts/generate_plots.py</code>.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-col">
+        <span class="footer-title">PEFT Benchmarking</span>
+        <p style="font-size: 14px; color: #999999; max-width: 320px;">
+          An empirical evaluation of Parameter-Efficient Fine-Tuning methods for Transformer Models.
+        </p>
+      </div>
+      <div class="footer-col">
+        <span class="footer-title">Quick Links</span>
+        <ul class="footer-links">
+          <li><a href="https://github.com/Satyanshgaur/PEFT-Benchmarking" target="_blank" rel="noopener" class="footer-link">GitHub Repository</a></li>
+          <li><a href="https://www.kaggle.com/datasets/satyanshgaur1/peft-benchmarking-results" target="_blank" rel="noopener" class="footer-link">Kaggle Dataset</a></li>
+          <li><a href="#overview" class="footer-link">Back to Top</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <span class="footer-title">Author</span>
+        <p style="font-size: 14px; color: #cccccc;">Satyansh Gaur</p>
+        <span class="nav-status">Open Source (MIT)</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
